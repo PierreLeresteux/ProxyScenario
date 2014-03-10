@@ -1,6 +1,5 @@
 var databaseName = 'database';
 var http = require('http'),
-    sys = require('sys'),
     httpProxy = require('http-proxy'),
     send = require('send'),
     fs = require('fs'),
@@ -18,7 +17,16 @@ db.loadDatabase(function (err) {
     http.createServer(function (req, res) {
         var url = req.url;
         var method = req.method;
-        sys.puts('Call : ' + method + ' => ' + baseUrl + url);
+        var body = '';
+        req.on('data', function (data) {
+            body += data
+        });
+
+        req.on('end', function () {
+            var realReq = http.request(options, callback);
+            realReq.write(body);
+            realReq.end();
+        });
 
         var options = {
             host: baseUrl,
@@ -31,7 +39,6 @@ db.loadDatabase(function (err) {
         callback = function (response) {
             var str = '';
 
-            //another chunk of data has been recieved, so append it to `str`
             response.on('data', function (chunk) {
                 str += chunk;
             });
@@ -39,21 +46,12 @@ db.loadDatabase(function (err) {
             response.on('end', function () {
                 console.log(str);
                 console.log(rootPath + url);
-                /*var split = url.split('/');
-                 var dirPath = rootPath;
-                 for (var i = 0; i < split.length - 1; i++) {
-                 dirPath += split[i] + "/";
-                 }
-                 var fileName = split[split.length - 1];
-                 console.log("DirPath : " + dirPath);
-                 console.log("Filename : " + fileName);
-                 mkdirp.sync(dirPath);
-                 fs.writeFileSync(dirPath + "/" + fileName, str);
-                 */
+
                 var entry = {
                     method: method,
                     url: url,
-                    body: str
+                    bodyOut: str,
+                    bodyIn: body
                 };
                 db.entry.insert(entry);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -62,14 +60,32 @@ db.loadDatabase(function (err) {
             });
         }
 
-        http.request(options, callback).end();
 
     }).listen(8000);
 
-    sys.puts('Server running at http://127.0.0.1:8000');
-
     var app = http.createServer(function (req, res) {
 
+        var bodyIn = '';
+        req.on('data', function (data) {
+            bodyIn += data
+        });
+
+        req.on('end', function () {
+            var url = req.url;
+            var method = req.method;
+
+            db.entry.findOne({url: url, method: method, bodyIn:bodyIn}, function (err, docs) {
+                if (null != docs) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.write(docs.bodyOut);
+                    res.end();
+                } else {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.write("Content not found");
+                    res.end();
+                }
+            });
+        });
 
         function error(err) {
             res.statusCode = err.status || 500;
@@ -82,14 +98,7 @@ db.loadDatabase(function (err) {
             res.end('Redirecting to ' + req.url + '/');
         }
 
-        var url = req.url;
-        var method = req.method;
-        db.entry.findOne({url: url, method: method}, function (err, docs) {
-            console.log(docs);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(docs.body);
-            res.end();
-        });
+
 
 
     }).listen(8080);

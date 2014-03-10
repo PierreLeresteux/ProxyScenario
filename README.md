@@ -17,3 +17,6 @@ Two ports are availables :
 
 The application is just a proxy to a real api (change the baseUrl value to target the api you want to store).
 
+
+You can also delete all entries, just start the application with the argument "eraseDB" :<br />
+node http-proxy.js eraseDB

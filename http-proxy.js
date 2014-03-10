@@ -13,6 +13,13 @@ db.loadDatabase(function (err) {
     db.entry = new Datastore(databaseName + '/entry.db');
     db.entry.loadDatabase();
 
+    process.argv.forEach(function(val, index, array) {
+        if (val=='eraseDB'){
+            console.log("Erase DB");
+            db.entry.remove({}, {});
+        };
+    });
+
     http.createServer(function (req, res) {
         var url = req.url;
         var method = req.method;
@@ -58,7 +65,7 @@ db.loadDatabase(function (err) {
 
 
     }).listen(8000);
-
+    console.log("Proxy listen on port 8000");
     var app = http.createServer(function (req, res) {
 
         var bodyIn = '';
@@ -85,4 +92,5 @@ db.loadDatabase(function (err) {
             });
         });
     }).listen(8080);
+    console.log("Mock API on port 8080");
 });

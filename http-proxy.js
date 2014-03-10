@@ -70,14 +70,16 @@ db.loadDatabase(function (err) {
             var url = req.url;
             var method = req.method;
 
-            db.entry.findOne({url: url, method: method, bodyIn:bodyIn}, function (err, docs) {
-                if (null != docs) {
+            var query = {url: url, method: method, bodyIn:bodyIn};
+
+            db.entry.findOne(query, function (err, doc) {
+                if (null != doc) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.write(docs.bodyOut);
+                    res.write(doc.bodyOut);
                     res.end();
                 } else {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.write("Content not found");
+                    res.write('{"error":"Content not yet recorded","request":'+JSON.stringify(query)+'}');
                     res.end();
                 }
             });

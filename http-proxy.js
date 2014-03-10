@@ -1,8 +1,6 @@
 var databaseName = 'database';
 var http = require('http'),
     httpProxy = require('http-proxy'),
-    send = require('send'),
-    fs = require('fs'),
     Datastore = require('nedb'),
     db = new Datastore({ filename: databaseName });
 

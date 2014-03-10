@@ -7,7 +7,6 @@ var http = require('http'),
     db = new Datastore({ filename: databaseName });
 
 var baseUrl = 'api.openweathermap.org';
-var rootPath = '/Users/pierre/git/ProxyScenario/root';
 
 db.loadDatabase(function (err) {
     db = {};
@@ -44,9 +43,6 @@ db.loadDatabase(function (err) {
             });
 
             response.on('end', function () {
-                console.log(str);
-                console.log(rootPath + url);
-
                 var entry = {
                     method: method,
                     url: url,

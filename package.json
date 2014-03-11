@@ -3,7 +3,8 @@
     , "description" : "A proxy to record scenario"
     , "main" : "http-proxy.js",
     "dependencies": {
-        "http-proxy": ">= 1.0.0",
-        "nedb":">= 0.10.4"
+        "http-proxy": ">= 1.0.x",
+        "nedb":">= 0.10.x",
+        "express": "3.x"
     }
 }

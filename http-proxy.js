@@ -1,12 +1,14 @@
 var databaseName = 'database';
 var http = require('http'),
     httpProxy = require('http-proxy'),
+    express = require('express'),
     Datastore = require('nedb'),
     db = new Datastore({ filename: databaseName });
 
-var baseUrl = 'api.openweathermap.org';
+var baseUrl = 'dev-unstable.mgt-api.int.masternaut.com';
 var offline = false;
-var port = 8080;
+var port = 8888;
+
 
 db.loadDatabase(function (err) {
     db = {};
@@ -25,7 +27,7 @@ db.loadDatabase(function (err) {
             offline = true;
         }
     });
-    var app = http.createServer(function (req, res) {
+    http.createServer(function (req, res) {
 
         var bodyIn = '';
         req.on('data', function (data) {
@@ -89,4 +91,43 @@ db.loadDatabase(function (err) {
         });
     }).listen(port);
     console.log("Mock API on port " + port);
+
+    /**BACKOFFICE PART**/
+    var app = express();
+    app.use(express.json());
+    app.use(express.urlencoded());
+    app.get('/entry', function(req, res) {
+        db.entry.find({},function (err, docs) {
+            res.send(docs);
+        });
+    
+    });
+    app.get('/entry/:id', function(req, res) {
+        db.entry.findOne({_id:req.params.id},function (err, doc) {
+            res.send(doc);
+        });
+    
+    });
+    app.delete('/entry/:id', function(req, res) {
+        db.entry.remove({_id:req.params.id},function (err, doc) {
+            res.status(204).send('No content');
+        });
+    
+    });
+    app.put('/entry/:id', function(req, res) {
+        var id = req.params.id;
+        var body = req.body;
+        console.log("Update entry "+id+" => "+JSON.stringify(body));
+        db.entry.update({_id:id},{$set:body},function (err, numReplaced) {
+            if (numReplaced>0){
+                db.entry.findOne({_id:id},function (err, doc) {
+                    res.send(doc);
+                });
+            }else{
+                res.status(404).send('Not modified');
+            }
+        });
+    
+    });
+    app.listen(3000);
 });

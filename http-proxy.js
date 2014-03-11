@@ -20,7 +20,6 @@ db.loadDatabase(function (err) {
             console.log("Erase DB");
             db.entry.remove({}, {});
         }
-        ;
         if (val == 'offline') {
             console.log("Offline mode");
             offline = true;
@@ -46,6 +45,7 @@ db.loadDatabase(function (err) {
                     res.end();
                 } else {
                     if (!offline) {
+                        var startDate=new Date();
                         var options = {
                             host: baseUrl,
                             path: url,
@@ -60,11 +60,13 @@ db.loadDatabase(function (err) {
                             });
 
                             response.on('end', function () {
+                                var endDate=new Date();
                                 var entry = {
                                     method: method,
                                     url: url,
                                     bodyOut: str,
-                                    bodyIn: bodyIn
+                                    bodyIn: bodyIn,
+                                    duration:endDate-startDate
                                 };
                                 db.entry.insert(entry);
                                 console.log("New entry recorded : "+method+":"+url);

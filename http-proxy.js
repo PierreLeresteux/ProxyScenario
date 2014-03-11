@@ -123,7 +123,7 @@ db.loadDatabase(function (err) {
     app.put('/entry/:id', function (req, res) {
         var id = req.params.id;
         var body = req.body;
-        console.log("Update entry " + id + " => " + JSON.stringify(body));
+        console.log("Update entry " + id);
         db.entry.update({_id: id}, {$set: body}, function (err, numReplaced) {
             if (numReplaced > 0) {
                 db.entry.findOne({_id: id}, function (err, doc) {

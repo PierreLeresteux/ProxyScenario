@@ -9,15 +9,15 @@
         <tr>
             <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
             <td style="margin-left:10px">{{this.url}}</td>
-            <td style="margin-left:10px">{{this.duration}}</td>
+            <td style="margin-left:10px">{{this.duration}} <span class="ink-badge" id="{{this._id}}_alert"></span></td>
         </tr>
         <tr class="hide-all">
             <td colspan="3">
-                <form method="PUT" action="/entry/{{this._id}}">
-                    <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
-                    <label class="content-right" for="{{this._id}}_bodyout">Response : </label><textarea id="{{this._id}}_bodyout">{{this.bodyOut}}</textarea>
-                    <button class="ink-button">Modify</button>
-                </form>
+                <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea
+                    id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
+                <label class="content-right" for="{{this._id}}_bodyout">Response : </label><textarea
+                    id="{{this._id}}_bodyout">{{this.bodyOut}}</textarea>
+                <button data-entryid="{{this._id}}" class="modifyButton ink-button">Modify</button>
             </td>
         </tr>
     {{/each}}
@@ -26,7 +26,7 @@
     <ul class="pagination"></ul>
 </nav>
 
-<script type="text/javascript">
+<script>
     // There are two ways to run the code...
     // 1 - If you know you have the component and its dependencies already loaded, just do:
     var table = new Ink.UI.Table('.ink-table');
@@ -35,4 +35,5 @@
     Ink.requireModules(['Ink.UI.Table_1'], function (Table) {
         new Table('.ink-table');
     });
+
 </script>

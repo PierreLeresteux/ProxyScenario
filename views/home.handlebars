@@ -6,13 +6,13 @@
     <th data-sortable="true">Duration</th>
     </thead>
     {{#each docs}}
-        <tr>
-            <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
+        <tr class="toggle" data-target="#{{this._id}}_panel">
+        <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
             <td style="margin-left:10px">{{this.url}}</td>
             <td style="margin-left:10px">{{this.duration}} <span class="ink-badge" id="{{this._id}}_alert"></span></td>
         </tr>
-        <tr class="hide-all">
-            <td colspan="3">
+        <tr id="{{this._id}}_panel" class="hide-all" style="display:none;">
+        <td colspan="3">
                 <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea
                     id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
                 <label class="content-right" for="{{this._id}}_bodyout">Response : </label><textarea

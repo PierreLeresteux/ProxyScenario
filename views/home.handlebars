@@ -1,0 +1,38 @@
+<h3>Entries :</h3>
+<table class="ink-table alternating hover" data-page-size="30">
+    <thead>
+    <th data-sortable="true">Method</th>
+    <th data-sortable="true">URL</th>
+    <th data-sortable="true">Duration</th>
+    </thead>
+    {{#each docs}}
+        <tr>
+            <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
+            <td style="margin-left:10px">{{this.url}}</td>
+            <td style="margin-left:10px">{{this.duration}}</td>
+        </tr>
+        <tr class="hide-all">
+            <td colspan="3">
+                <form method="PUT" action="/entry/{{this._id}}">
+                    <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
+                    <label class="content-right" for="{{this._id}}_bodyout">Response : </label><textarea id="{{this._id}}_bodyout">{{this.bodyOut}}</textarea>
+                    <button class="ink-button">Modify</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+</table>
+<nav class="ink-navigation">
+    <ul class="pagination"></ul>
+</nav>
+
+<script type="text/javascript">
+    // There are two ways to run the code...
+    // 1 - If you know you have the component and its dependencies already loaded, just do:
+    var table = new Ink.UI.Table('.ink-table');
+
+    // 2 - If you're not sure the component or its dependencies are loaded at runtime, do:
+    Ink.requireModules(['Ink.UI.Table_1'], function (Table) {
+        new Table('.ink-table');
+    });
+</script>

@@ -2,6 +2,7 @@ var databaseName = 'database';
 var http = require('http'),
     httpProxy = require('http-proxy'),
     express = require('express'),
+    exphbs = require('express3-handlebars'),
     Datastore = require('nedb'),
     db = new Datastore({ filename: databaseName });
 
@@ -41,13 +42,13 @@ db.loadDatabase(function (err) {
 
             db.entry.findOne(query, function (err, doc) {
                 if (null != doc) {
-                    console.log("Find entry : "+method+":"+url);
+                    console.log("Find entry : " + method + ":" + url);
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.write(doc.bodyOut);
                     res.end();
                 } else {
                     if (!offline) {
-                        var startDate=new Date();
+                        var startDate = new Date();
                         var options = {
                             host: baseUrl,
                             path: url,
@@ -62,16 +63,16 @@ db.loadDatabase(function (err) {
                             });
 
                             response.on('end', function () {
-                                var endDate=new Date();
+                                var endDate = new Date();
                                 var entry = {
                                     method: method,
                                     url: url,
                                     bodyOut: str,
                                     bodyIn: bodyIn,
-                                    duration:endDate-startDate
+                                    duration: endDate - startDate
                                 };
                                 db.entry.insert(entry);
-                                console.log("New entry recorded : "+method+":"+url);
+                                console.log("New entry recorded : " + method + ":" + url);
                                 res.writeHead(200, { 'Content-Type': 'application/json' });
                                 res.write(str);
                                 res.end();
@@ -96,38 +97,67 @@ db.loadDatabase(function (err) {
     var app = express();
     app.use(express.json());
     app.use(express.urlencoded());
-    app.get('/entry', function(req, res) {
-        db.entry.find({},function (err, docs) {
+    app.use(express.compress());
+    app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+    app.set('view engine', 'handlebars');
+//    app.enable('view cache');
+    //Routes
+    app.get('/entry', function (req, res) {
+        db.entry.find({}, function (err, docs) {
             res.send(docs);
         });
-    
+
     });
-    app.get('/entry/:id', function(req, res) {
-        db.entry.findOne({_id:req.params.id},function (err, doc) {
+    app.get('/entry/:id', function (req, res) {
+        db.entry.findOne({_id: req.params.id}, function (err, doc) {
             res.send(doc);
         });
-    
+
     });
-    app.delete('/entry/:id', function(req, res) {
-        db.entry.remove({_id:req.params.id},function (err, doc) {
+    app.delete('/entry/:id', function (req, res) {
+        db.entry.remove({_id: req.params.id}, function (err, doc) {
             res.status(204).send('No content');
         });
-    
+
     });
-    app.put('/entry/:id', function(req, res) {
+    app.put('/entry/:id', function (req, res) {
         var id = req.params.id;
         var body = req.body;
-        console.log("Update entry "+id+" => "+JSON.stringify(body));
-        db.entry.update({_id:id},{$set:body},function (err, numReplaced) {
-            if (numReplaced>0){
-                db.entry.findOne({_id:id},function (err, doc) {
+        console.log("Update entry " + id + " => " + JSON.stringify(body));
+        db.entry.update({_id: id}, {$set: body}, function (err, numReplaced) {
+            if (numReplaced > 0) {
+                db.entry.findOne({_id: id}, function (err, doc) {
                     res.send(doc);
                 });
-            }else{
+            } else {
                 res.status(404).send('Not modified');
             }
         });
-    
+
     });
+    // UI
+    app.get('/', function (req, res) {
+        db.entry.find({}, function (err, docs) {
+            res.render('home', {docs: docs, helpers: {
+                getLabelColor: function () {
+                    if ("GET" == this.method) {
+                        return "info";
+                    }
+                    if ("DELETE" == this.method) {
+                        return "error";
+                    }
+                    if ("POST" == this.method) {
+                        return "success";
+                    }
+                    if ("PUT" == this.method) {
+                        return "warning";
+                    }
+                    return "info";
+                }}
+            });
+        });
+
+    });
+    app.use('/static', express.static('views/static'));
     app.listen(3000);
 });

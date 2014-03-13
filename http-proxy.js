@@ -170,10 +170,10 @@ function startServer() {
         });
 
     });
-// UI
+    // UI
     app.get('/', function (req, res) {
         db.entry.find({}, function (err, docs) {
-            res.render('home', {docs: docs, helpers: {
+            res.render('home', {docs: docs, settings: settings, helpers: {
                 getLabelColor: function () {
                     if ("GET" == this.method) {
                         return "info";

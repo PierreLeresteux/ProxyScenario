@@ -1,3 +1,41 @@
+<h3>Settings :</h3>
+<div class="control-group">
+    <div class="column-group gutters">
+        <form class="ink-form">
+            <fieldset>
+                <div class="control-group column-group gutters">
+                    <label class="large-20 content-right" for="phone">URL Api:</label>
+
+                    <div class="control large-60 ">
+                        <input type="text" id="baseUrl" value="{{settings.baseUrl}}">
+                    </div>
+                </div>
+                <div class="control-group column-group gutters">
+                    <label class="large-20 content-right" for="phone">Port Proxy:</label>
+
+                    <div class="control large-10">
+                        <input type="text" id="portProxy" value="{{settings.portProxy}}">
+                    </div>
+                </div>
+                <div class="control-group column-group gutters">
+                    <label class="large-20 content-right" for="phone">Port Admin:</label>
+
+                    <div class="control large-10">
+                        <input type="text" id="portAdmin" value="{{settings.portAdmin}}">
+                    </div>
+                    <div class="control large-30">
+                        <i class="ink-label error invert">need restart and can be dangerous !</i>
+                    </div>
+                </div>
+                <div class="control-group column-group gutters">
+                    <div class="control large-20 content-right">
+                        <button id="saveSettings" class="ink-button green">Save settings</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
 <h3>Entries :</h3>
 <table class="ink-table alternating hover" data-page-size="30">
     <thead>
@@ -13,7 +51,7 @@
             <td style="margin-left:10px">{{this.duration}} <span class="ink-badge" id="{{this._id}}_alert"></span></td>
             <td><i class="toggle icon-edit icon-medium" data-target="#{{this._id}}_panel"></i></td>
         </tr>
-       <!-- <tr id="{{this._id}}_panel" class="hide-all" style="display: none">
+        <!-- <tr id="{{this._id}}_panel" class="hide-all" style="display: none">
             <td colspan="3">
                 <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea
                     id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
@@ -29,10 +67,14 @@
 </nav>
 <div class="ink-shade">
     <div id="modal" class="ink-modal" data-trigger=".toggle">
-        <div class="modal-header"> <button class="modal-close ink-dismiss"></button>
+        <div class="modal-header">
+            <button class="modal-close ink-dismiss"></button>
             <h5>Edit the entry</h5></div>
         <div class="modal-body"></div>
-        <div class="modal-footer"><button data-entryid="{{this._id}}" class="modifyButton ink-button blue">Modify</button><button class="ink-button modal-close">Cancel</button></div>
+        <div class="modal-footer">
+            <button data-entryid="{{this._id}}" class="modifyButton ink-button blue">Modify</button>
+            <button class="ink-button modal-close">Cancel</button>
+        </div>
     </div>
 </div>
 

@@ -1,23 +1,27 @@
-var databaseName = 'database';
+var databaseDir = 'database';
 var http = require('http'),
     httpProxy = require('http-proxy'),
     express = require('express'),
     exphbs = require('express3-handlebars'),
     Datastore = require('nedb'),
-    db = new Datastore({ filename: databaseName });
+    fs = require('fs'),
+    db = new Datastore({ filename: databaseDir });
 
 var baseUrl = 'dev-unstable.mgt-api.int.masternaut.com';
 var offline = false;
 var port = 8888;
 
+if (!fs.existsSync(databaseDir)) {
+    fs.mkdirSync(databaseDir);
+}
 
 
 db.loadDatabase(function (err) {
     db = {};
-    db.setting = new Datastore(databaseName + '/setting.db');
+    db.setting = new Datastore(databaseDir + '/setting.db');
     db.setting.loadDatabase();
 
-    db.entry = new Datastore(databaseName + '/entry.db');
+    db.entry = new Datastore(databaseDir + '/entry.db');
     db.entry.loadDatabase();
 
 

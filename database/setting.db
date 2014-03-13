@@ -1,4 +1,4 @@
-{"key":"baseUrl","value":"dev-unstable.mgt-api.int.masternaut.com","_id":"baseUrl"}
+{"key":"baseUrl","value":"dev-unstable.mgt-api.int.com","_id":"baseUrl"}
 {"key":"offline","value":false,"_id":"offline"}
 {"key":"portAdmin","value":3000,"_id":"portAdmin"}
 {"key":"portProxy","value":8888,"_id":"portProxy"}

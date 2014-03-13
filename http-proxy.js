@@ -5,22 +5,31 @@ var http = require('http'),
     exphbs = require('express3-handlebars'),
     Datastore = require('nedb'),
     fs = require('fs'),
-    db = new Datastore({ filename: databaseDir });
+    db = new Datastore({filename: databaseDir});
 
-var baseUrl = 'dev-unstable.mgt-api.int.masternaut.com';
-var offline = false;
-var port = 8888;
+var settings = {};
+loadSettingsAndStartServer();
 
-if (!fs.existsSync(databaseDir)) {
-    fs.mkdirSync(databaseDir);
+//Functions
+function checkDatabaseDir() {
+    if (!fs.existsSync(databaseDir)) {
+        fs.mkdirSync(databaseDir);
+    }
 }
-
-
-db.loadDatabase(function (err) {
-    db = {};
-    db.setting = new Datastore(databaseDir + '/setting.db');
-    db.setting.loadDatabase();
-
+function loadSettingsAndStartServer() {
+    checkDatabaseDir();
+    db.loadDatabase(function (err) {
+        db.setting = new Datastore(databaseDir + '/setting.db');
+        db.setting.loadDatabase();
+        db.setting.find({}, function (err, docs) {
+            docs.forEach(function (element, index, array) {
+                settings[element.key] = element.value;
+            });
+            startServer();
+        });
+    });
+}
+function startServer() {
     db.entry = new Datastore(databaseDir + '/entry.db');
     db.entry.loadDatabase();
 
@@ -55,10 +64,10 @@ db.loadDatabase(function (err) {
                     res.write(doc.bodyOut);
                     res.end();
                 } else {
-                    if (!offline) {
+                    if (!settings['offline']) {
                         var startDate = new Date();
                         var options = {
-                            host: baseUrl,
+                            host: settings['baseUrl'],
                             path: url,
                             method: method,
                             headers: req.headers
@@ -98,8 +107,8 @@ db.loadDatabase(function (err) {
                 }
             });
         });
-    }).listen(port);
-    console.log("Mock API on port " + port);
+    }).listen(settings['portProxy']);
+    console.log("Mock API on port " + settings['portProxy']);
 
     /**BACKOFFICE PART**/
     var app = express();
@@ -108,13 +117,31 @@ db.loadDatabase(function (err) {
     app.use(express.compress());
     app.engine('handlebars', exphbs({defaultLayout: 'main'}));
     app.set('view engine', 'handlebars');
-//    app.enable('view cache');
     //Routes
+    app.get('/setting', function (req, res) {
+        db.setting.find({}, function (err, docs) {
+            res.send(docs);
+        });
+    });
+    app.put('/setting/:id', function (req, res) {
+        var id = req.params.id;
+        var body = req.body;
+        console.log("Update setting " + id);
+        db.setting.update({_id: id}, {$set: body}, function (err, numReplaced) {
+            if (numReplaced > 0) {
+                db.setting.findOne({_id: id}, function (err, doc) {
+                    res.send(doc);
+                });
+            } else {
+                res.status(404).send('Not modified');
+            }
+        });
+
+    });
     app.get('/entry', function (req, res) {
         db.entry.find({}, function (err, docs) {
             res.send(docs);
         });
-
     });
     app.get('/entry/:id', function (req, res) {
         db.entry.findOne({_id: req.params.id}, function (err, doc) {
@@ -143,7 +170,7 @@ db.loadDatabase(function (err) {
         });
 
     });
-    // UI
+// UI
     app.get('/', function (req, res) {
         db.entry.find({}, function (err, docs) {
             res.render('home', {docs: docs, helpers: {
@@ -167,7 +194,7 @@ db.loadDatabase(function (err) {
 
     });
     app.use('/static', express.static('views/static'));
-    app.listen(3000);
-    console.log("Admin interface on port 3000");
+    app.listen(settings['portAdmin']);
+    console.log("Admin interface on port " + settings['portAdmin']);
 
-});
+}

@@ -3,33 +3,44 @@
     <div class="column-group gutters">
         <form class="ink-form">
             <fieldset>
-                <div class="control-group column-group gutters">
-                    <label class="large-20 content-right" for="phone">URL Api:</label>
+                <div class="control-group column-group">
+                    <label class="large-20 content-right">URL Api:</label>
 
-                    <div class="control large-60 ">
-                        <input type="text" id="baseUrl" value="{{settings.baseUrl}}">
+                    <div class="control large-40">
+                    <input type="text" id="baseUrl" value="{{settings.baseUrl}}">
+                    </div>
+                    <div class="control large-20 content-left">
+                        <button id="saveSettings" class="ink-button">Save</button>
                     </div>
                 </div>
-                <div class="control-group column-group gutters">
-                    <label class="large-20 content-right" for="phone">Port Proxy:</label>
+                <div class="control-group column-group">
+                    <label class="large-20 content-right">Port Proxy:</label>
 
                     <div class="control large-10">
                         <input type="text" id="portProxy" value="{{settings.portProxy}}">
                     </div>
+                    <div class="control large-20 content-left">
+                        <button id="saveSettings" class="ink-button">Save</button>
+                    </div>
                 </div>
-                <div class="control-group column-group gutters">
-                    <label class="large-20 content-right" for="phone">Port Admin:</label>
+                <div class="control-group column-group">
+                    <label class="large-20 content-right">Port Admin:</label>
 
                     <div class="control large-10">
                         <input type="text" id="portAdmin" value="{{settings.portAdmin}}">
                     </div>
-                    <div class="control large-30">
-                        <i class="ink-label error invert">need restart and can be dangerous !</i>
+                    <div class="control large-10 content-left">
+                        <button id="saveSettings" class="ink-button">Save</button>
+                    </div>
+                    <div class="control large-30 content-left">
+                    <i class="ink-label error invert">need restart and can be dangerous !</i>
                     </div>
                 </div>
-                <div class="control-group column-group gutters">
-                    <div class="control large-20 content-right">
-                        <button id="saveSettings" class="ink-button green">Save settings</button>
+                <div class="control-group column-group">
+                    <label class="large-20 content-right">Status:</label>
+
+                    <div class="control large-10">
+                        <input type="checkbox" {{bindAttr checked="settings.offline"}}/>
                     </div>
                 </div>
             </fieldset>
@@ -49,7 +60,7 @@
             <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
             <td style="margin-left:10px">{{this.url}}</td>
             <td style="margin-left:10px">{{this.duration}} <span class="ink-badge" id="{{this._id}}_alert"></span></td>
-            <td><i class="toggle icon-edit icon-medium" data-target="#{{this._id}}_panel"></i></td>
+            <td><i class="toggl icon-edit icon-medium" data-target="#{{this._id}}_panel"></i></td>
         </tr>
         <!-- <tr id="{{this._id}}_panel" class="hide-all" style="display: none">
             <td colspan="3">
@@ -66,8 +77,8 @@
     <ul class="pagination"></ul>
 </nav>
 <div class="ink-shade">
-    <div id="modal" class="ink-modal" data-trigger=".toggle">
-        <div class="modal-header">
+    <div id="modal" class="ink-modal" data-trigger=".icon-edit">
+    <div class="modal-header">
             <button class="modal-close ink-dismiss"></button>
             <h5>Edit the entry</h5></div>
         <div class="modal-body"></div>
@@ -77,18 +88,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    /*var table = new Ink.UI.Table('.ink-table');
-    Ink.requireModules(['Ink.UI.Table_1'], function (Table) {
-        new Table('.ink-table');
-    });*/
-    /*var modal = new Ink.UI.Modal( '.modal' );
-    Ink.requireModules( ['Ink.UI.Modal_1'], function(Modal){
-        new Modal( '.ink-modal' );
-    });
-    modal.onShow(function(){
-       console.log("Show modal");
-    });
-*/
-</script>

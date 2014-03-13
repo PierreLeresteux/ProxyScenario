@@ -11,8 +11,12 @@ var offline = false;
 var port = 8888;
 
 
+
 db.loadDatabase(function (err) {
     db = {};
+    db.setting = new Datastore(databaseName + '/setting.db');
+    db.setting.loadDatabase();
+
     db.entry = new Datastore(databaseName + '/entry.db');
     db.entry.loadDatabase();
 
@@ -160,4 +164,6 @@ db.loadDatabase(function (err) {
     });
     app.use('/static', express.static('views/static'));
     app.listen(3000);
+    console.log("Admin interface on port 3000");
+
 });

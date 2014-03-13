@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="static/css/ink-min.css">
     <script src="static/js/ink.min.js"></script>
     <script src="static/js/ink.table.js"></script>
+    <script src="static/js/ink.modal.js"></script>
     <script src="static/js/autoload.js"></script>
     <script src="static/js/zepto.js"></script>
 </head>
@@ -44,6 +45,14 @@
                 }
             })
         });
+
+    });
+    var modal = new Ink.UI.Modal( '#modal' );
+    Ink.requireModules( ['Ink.UI.Modal_1'], function(Modal){
+        new Modal( '.ink-modal' );
+    });
+    modal.onShow(function(){
+        console.log("Show modal");
     });
 </script>
 </body>

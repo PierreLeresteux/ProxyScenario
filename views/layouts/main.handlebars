@@ -68,13 +68,13 @@
             $.ajax({
                 type: 'PUT',
                 url: '/setting/' + currentId,
-                data: JSON.stringify({value: value }),
+                data: {'value': value },
                 contentType: 'application/json',
                 success: function (data) {
-
+                    console.log("OK : " + JSON.stringify(data));
                 },
                 error: function (xhr, type) {
-
+                    console.log("ERROR " + type);
                 }
             })
 

@@ -120,13 +120,14 @@ function startServer() {
         });
     });
     app.put('/setting/:id', function (req, res) {
-        var id = req.params.id;
+        var key = req.params.id;
         var body = req.body;
-        console.log("Update setting _id" + id);
+        console.log("Update setting key " + key);
         console.log("Update setting value" + body.value);
-        db.setting.update({key: id}, {$set: {value: body.value}}, { multi: true }, function (err, numReplaced) {
+        db.setting.update({key: key}, {$set: {value: body.value}}, { multi: true }, function (err, numReplaced) {
+            console.log("Updated row : " + numReplaced);
             if (numReplaced > 0) {
-                db.setting.findOne({_id: id}, function (err, doc) {
+                db.setting.findOne({key: key}, function (err, doc) {
                     res.send(doc);
                 });
             } else {

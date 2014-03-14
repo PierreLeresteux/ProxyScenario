@@ -60,6 +60,25 @@
             })
         });
 
+        $('.saveSettings').click(function () {
+            var submitId = $(this).attr('id');
+            var $input = $('input[data-submit=' + submitId + ']');
+            var value = $input.val();
+            var currentId = $input.attr('id');
+            $.ajax({
+                type: 'PUT',
+                url: '/setting/' + currentId,
+                data: JSON.stringify({value: value }),
+                contentType: 'application/json',
+                success: function (data) {
+
+                },
+                error: function (xhr, type) {
+
+                }
+            })
+
+        });
     });
     /*var modal = new Ink.UI.Modal('#modal');
     Ink.requireModules(['Ink.UI.Modal_1'], function (Modal) {

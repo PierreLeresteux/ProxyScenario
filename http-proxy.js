@@ -122,8 +122,9 @@ function startServer() {
     app.put('/setting/:id', function (req, res) {
         var id = req.params.id;
         var body = req.body;
-        console.log("Update setting " + id);
-        db.setting.update({_id: id}, {$set: body}, function (err, numReplaced) {
+        console.log("Update setting _id" + id);
+        console.log("Update setting value" + body.value);
+        db.setting.update({key: id}, {$set: {value: body.value}}, { multi: true }, function (err, numReplaced) {
             if (numReplaced > 0) {
                 db.setting.findOne({_id: id}, function (err, doc) {
                     res.send(doc);

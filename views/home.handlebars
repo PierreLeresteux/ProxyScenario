@@ -16,30 +16,33 @@
                             <label class="large-20 content-right">URL Api:</label>
 
                             <div class="control large-40">
-                                <input type="text" id="baseUrl" value="{{settings.baseUrl}}">
+                                <input data-submit="saveSettingsBaseUrl" type="text" id="baseUrl"
+                                       value="{{settings.baseUrl}}">
                             </div>
                             <div class="control large-20 content-left">
-                                <button id="saveSettings" class="ink-button">Save</button>
+                                <button id="saveSettingsBaseUrl" class="saveSettings ink-button">Save</button>
                             </div>
                         </div>
                         <div class="control-group column-group">
                             <label class="large-20 content-right">Port Proxy:</label>
 
                             <div class="control large-10">
-                                <input type="text" id="portProxy" value="{{settings.portProxy}}">
+                                <input data-submit="saveSettingsPortProxy" type="text" id="portProxy"
+                                       value="{{settings.portProxy}}">
                             </div>
                             <div class="control large-20 content-left">
-                                <button id="saveSettings" class="ink-button">Save</button>
+                                <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
                             </div>
                         </div>
                         <div class="control-group column-group">
                             <label class="large-20 content-right">Port Admin:</label>
 
                             <div class="control large-10">
-                                <input type="text" id="portAdmin" value="{{settings.portAdmin}}">
+                                <input data-submit="saveSettingsPortAdmin" type="text" id="portAdmin"
+                                       value="{{settings.portAdmin}}">
                             </div>
                             <div class="control large-10 content-left">
-                                <button id="saveSettings" class="ink-button">Save</button>
+                                <button id="saveSettingsPortAdmin" class="saveSettings ink-button">Save</button>
                             </div>
                             <div class="control large-30 content-left">
                                 <i class="ink-label error invert">need restart and can be dangerous !</i>
@@ -49,7 +52,7 @@
                             <label class="large-20 content-right">Status:</label>
 
                             <div class="control large-10">
-                                <input type="checkbox" {{checkedOnline}}/>
+                                <input id="online" type="checkbox" {{checkedOnline}}/>
                             </div>
                         </div>
                     </fieldset>

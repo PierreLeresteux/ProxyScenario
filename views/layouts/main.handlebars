@@ -60,21 +60,42 @@
             })
         });
 
+        $('#online').change(function () {
+            var $input = $(this);
+            var online = $input.is(':checked');
+            $.ajax({
+                type: 'PUT',
+                url: '/setting/online',
+                data: '{"value": ' + online + ' }',
+                contentType: 'application/json'
+            })
+        });
         $('.saveSettings').click(function () {
-            var submitId = $(this).attr('id');
+            var $btn = $(this);
+            var submitId = $btn.attr('id');
             var $input = $('input[data-submit=' + submitId + ']');
             var value = $input.val();
             var currentId = $input.attr('id');
             $.ajax({
                 type: 'PUT',
                 url: '/setting/' + currentId,
-                data: '{"value": ' + value + ' }',
+                data: '{"value": "' + value + '" }',
                 contentType: 'application/json',
                 success: function (data) {
-                    console.log("OK : " + JSON.stringify(data));
+                    $btn.addClass("green");
+                    $btn.text("Saved");
+                    setTimeout(function () {
+                        $btn.removeClass("green");
+                        $btn.text("Save");
+                    }, 2000);
                 },
                 error: function (xhr, type) {
-                    console.log("ERROR " + type);
+                    $btn.addClass("red");
+                    $btn.text("Error");
+                    setTimeout(function () {
+                        $btn.removeClass("red");
+                        $btn.text("Save");
+                    }, 2000);
                 }
             })
 

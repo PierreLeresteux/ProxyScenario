@@ -13,11 +13,14 @@
                 <form class="ink-form">
                     <fieldset>
                         <div class="control-group column-group">
-                            <label class="large-20 content-right">URL Api:</label>
+                            <label class="large-20 content-right">URL Api http://</label>
 
-                            <div class="control large-40">
-                                <input data-submit="saveSettingsBaseUrl" type="text" id="baseUrl"
+                            <div class="control large-40 append-symbol">
+                                <span>
+                                    <input data-submit="saveSettingsBaseUrl" type="text" id="baseUrl"
                                        value="{{settings.baseUrl}}">
+                                    <i class="icon-exchange"></i>
+                                </span>
                             </div>
                             <div class="control large-20 content-left">
                                 <button id="saveSettingsBaseUrl" class="saveSettings ink-button">Save</button>
@@ -33,12 +36,15 @@
                         <div class="control-group column-group">
                             <label class="large-20 content-right">Port Proxy:</label>
 
-                            <div class="control large-10">
+                            <div class="control large-10 append-symbol">
+                                <span>
                                 <input data-submit="saveSettingsPortProxy" type="text" id="portProxy"
                                        value="{{settings.portProxy}}">
+                                <i class="icon-warning-sign"></i>
+                                </span>
                             </div>
                             <div class="control large-10 content-left">
-                            <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
+                                <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
                             </div>
                             <div class="control large-30 content-left">
                                 <i class="ink-label error invert">need restart and can be dangerous !</i>
@@ -47,9 +53,12 @@
                         <div class="control-group column-group">
                             <label class="large-20 content-right">Port Admin:</label>
 
-                            <div class="control large-10">
+                            <div class="control large-10 append-symbol">
+                                <span>
                                 <input data-submit="saveSettingsPortAdmin" type="text" id="portAdmin"
                                        value="{{settings.portAdmin}}">
+                                    <i class="icon-warning-sign"></i>
+                                </span>
                             </div>
                             <div class="control large-10 content-left">
                                 <button id="saveSettingsPortAdmin" class="saveSettings ink-button">Save</button>

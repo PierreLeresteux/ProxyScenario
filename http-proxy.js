@@ -122,7 +122,7 @@ function startServer() {
     app.put('/setting/:id', function (req, res) {
         var key = req.params.id;
         var body = req.body;
-        console.log("Update setting key/key " + key + "/" + body.value);
+        console.log("Update setting key/old value/new value " + key + "/" + settings[key] + "/" + body.value);
         db.setting.update({key: key}, {$set: {value: body.value}}, { multi: true }, function (err, numReplaced) {
             if (numReplaced > 0) {
                 settings[key] = body.value;

@@ -6,8 +6,9 @@ var http = require('http'),
     Datastore = require('nedb'),
     fs = require('fs'),
     db = new Datastore({filename: databaseDir});
-
-var settings = {};
+var server = {},
+    sockets = [],
+    settings = {};
 loadSettingsAndStartServer();
 
 //Functions
@@ -26,86 +27,11 @@ function loadSettingsAndStartServer() {
                 settings[element.key] = element.value;
             });
             startServer();
+            startBackoffice();
         });
     });
 }
-function startServer() {
-    db.entry = new Datastore(databaseDir + '/entry.db');
-    db.entry.loadDatabase();
-
-
-    process.argv.forEach(function (val, index, array) {
-
-        if (val == 'eraseDB') {
-            console.log("Erase DB");
-            db.entry.remove({}, {});
-        }
-    });
-    http.createServer(function (req, res) {
-
-        var bodyIn = '';
-        req.on('data', function (data) {
-            bodyIn += data
-        });
-
-        req.on('end', function () {
-            var url = req.url;
-            var method = req.method;
-            var query = {url: url, method: method, bodyIn: bodyIn};
-
-            db.entry.findOne(query, function (err, doc) {
-                if (null != doc) {
-                    console.log("Find entry : " + method + ":" + url);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.write(doc.bodyOut);
-                    res.end();
-                } else {
-                    if (settings['online']) {
-                        var startDate = new Date();
-                        var options = {
-                            host: settings['baseUrl'],
-                            path: url,
-                            method: method,
-                            headers: req.headers
-                        };
-                        callback = function (response) {
-                            var str = '';
-
-                            response.on('data', function (chunk) {
-                                str += chunk;
-                            });
-
-                            response.on('end', function () {
-                                var endDate = new Date();
-                                var entry = {
-                                    method: method,
-                                    url: url,
-                                    bodyOut: str,
-                                    bodyIn: bodyIn,
-                                    duration: endDate - startDate
-                                };
-                                db.entry.insert(entry);
-                                console.log("New entry recorded : " + method + ":" + url);
-                                res.writeHead(200, { 'Content-Type': 'application/json' });
-                                res.write(str);
-                                res.end();
-                            });
-                        };
-                        var realReq = http.request(options, callback);
-                        realReq.write(bodyIn);
-                        realReq.end();
-
-                    } else {
-                        res.writeHead(404, { 'Content-Type': 'application/json' });
-                        res.write('{"error":"Content not yet recorded","request":' + JSON.stringify(query) + '}');
-                        res.end();
-                    }
-                }
-            });
-        });
-    }).listen(settings['portProxy']);
-    console.log("Mock API on port " + settings['portProxy']);
-
+function startBackoffice() {
     /**BACKOFFICE PART**/
     var app = express();
     app.use(express.json());
@@ -127,6 +53,15 @@ function startServer() {
             if (numReplaced > 0) {
                 settings[key] = body.value;
                 db.setting.persistence.compactDatafile();
+                if (key == 'portProxy') {
+                    server.close(function () {
+                        console.log('Mock API closed!');
+                        startServer();
+                    });
+                    for (var i = 0; i < sockets.length; i++) {
+                        sockets[i].destroy();
+                    }
+                }
                 db.setting.findOne({key: key}, function (err, doc) {
                     res.send(doc);
                 });
@@ -200,5 +135,89 @@ function startServer() {
     app.use('/static', express.static('views/static'));
     app.listen(settings['portAdmin']);
     console.log("Admin interface on port " + settings['portAdmin']);
+}
+function startServer() {
+    db.entry = new Datastore(databaseDir + '/entry.db');
+    db.entry.loadDatabase();
 
+
+    process.argv.forEach(function (val, index, array) {
+
+        if (val == 'eraseDB') {
+            console.log("Erase DB");
+            db.entry.remove({}, {});
+        }
+    });
+    server = http.createServer(function (req, res) {
+
+        var bodyIn = '';
+        req.on('data', function (data) {
+            bodyIn += data
+        });
+
+        req.on('end', function () {
+            var url = req.url;
+            var method = req.method;
+            var query = {url: url, method: method, bodyIn: bodyIn};
+
+            db.entry.findOne(query, function (err, doc) {
+                if (null != doc) {
+                    console.log("Find entry : " + method + ":" + url);
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.write(doc.bodyOut);
+                    res.end();
+                } else {
+                    if (settings['online']) {
+                        var startDate = new Date();
+                        var options = {
+                            host: settings['baseUrl'],
+                            path: url,
+                            method: method,
+                            headers: req.headers
+                        };
+                        callback = function (response) {
+                            var str = '';
+
+                            response.on('data', function (chunk) {
+                                str += chunk;
+                            });
+
+                            response.on('end', function () {
+                                var endDate = new Date();
+                                var entry = {
+                                    method: method,
+                                    url: url,
+                                    bodyOut: str,
+                                    bodyIn: bodyIn,
+                                    duration: endDate - startDate
+                                };
+                                db.entry.insert(entry);
+                                console.log("New entry recorded : " + method + ":" + url);
+                                res.writeHead(200, { 'Content-Type': 'application/json' });
+                                res.write(str);
+                                res.end();
+                            });
+                        };
+                        var realReq = http.request(options, callback);
+                        realReq.write(bodyIn);
+                        realReq.end();
+
+                    } else {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.write('{"error":"Content not yet recorded","request":' + JSON.stringify(query) + '}');
+                        res.end();
+                    }
+                }
+            });
+        });
+    }).listen(settings['portProxy']);
+    console.log("Mock API on port " + settings['portProxy']);
+    server.on('connection', function (socket) {
+        sockets.push(socket);
+        socket.setTimeout(4000);
+        socket.on('close', function () {
+            console.log('socket closed');
+            sockets.splice(sockets.indexOf(socket), 1);
+        });
+    });
 }

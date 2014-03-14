@@ -185,8 +185,8 @@ function startServer() {
                     }
                     return "info";
                 },
-                checked: function (currentValue) {
-                    return currentValue == true ? ' checked=checked ' : '';
+                checkedOnline: function () {
+                    return this.settings.online == true ? ' checked=checked ' : '';
                 }
             }
             });

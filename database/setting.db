@@ -1,4 +1,4 @@
 {"key":"baseUrl","value":"dev-unstable.mgt-api.int.com","_id":"baseUrl"}
 {"key":"online","value":true,"_id":"online"}
-{"key":"portAdmin","value":3000,"_id":"portAdmin"}
-{"key":"portProxy","value":8888,"_id":"portProxy"}
+{"key":"portAdmin","value":"3000","_id":"portAdmin"}
+{"key":"portProxy","value":"8888","_id":"portProxy"}

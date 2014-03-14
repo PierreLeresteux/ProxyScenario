@@ -40,10 +40,6 @@ function startServer() {
             console.log("Erase DB");
             db.entry.remove({}, {});
         }
-        if (val == 'offline') {
-            console.log("Offline mode");
-            offline = true;
-        }
     });
     http.createServer(function (req, res) {
 
@@ -64,7 +60,7 @@ function startServer() {
                     res.write(doc.bodyOut);
                     res.end();
                 } else {
-                    if (!settings['offline']) {
+                    if (settings['online']) {
                         var startDate = new Date();
                         var options = {
                             host: settings['baseUrl'],
@@ -188,7 +184,11 @@ function startServer() {
                         return "warning";
                     }
                     return "info";
-                }}
+                },
+                checked: function (currentValue) {
+                    return currentValue == true ? ' checked=checked ' : '';
+                }
+            }
             });
         });
 

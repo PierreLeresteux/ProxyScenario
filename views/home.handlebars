@@ -46,9 +46,6 @@
                             <div class="control large-10 content-left">
                                 <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
                             </div>
-                            <div class="control large-30 content-left">
-                                <i class="ink-label error invert">restart after save</i>
-                            </div>
                         </div>
                         <div class="control-group column-group">
                             <label class="large-20 content-right">Port Admin:</label>
@@ -95,7 +92,7 @@
             </thead>
             {{#each docs}}
                 <tr id="{{this._id}}">
-                <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
+                    <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
                     <td style="margin-left:10px">{{this.url}}</td>
                     <td style="margin-left:10px">{{this.duration}} <span class="ink-badge"
                                                                          id="{{this._id}}_alert"></span></td>

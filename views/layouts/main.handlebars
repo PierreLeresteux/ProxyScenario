@@ -10,8 +10,8 @@
     <script src="static/js/ink.table.js"></script>
     <script src="static/js/ink.tabs.js"></script>
     <script src="static/js/ink.modal.js"></script>
+    <script src="static/js/underscore.min.js"></script>
     <script src="static/js/autoload.js"></script>
-
     <script src="static/js/jquery.onoff.min.js"></script>
     <style>
         body {
@@ -60,6 +60,38 @@
             })
         });
 
+        $('#searchEntry').click(function () {
+            var $input = $('input[data-input=searchEntry]');
+            $.ajax({
+                type: 'POST',
+                url: '/entry/search',
+                data: '{"q": "' + $input.val() + '" }',
+                contentType: 'application/json',
+                success: function (data) {
+                    var ids = _.pluck(data, "_id");
+                    console.log(data.length);
+                    var $tr = $('#trash tbody tr');
+                    if ($tr.length > 0) {
+                        $('#entries tbody').html($('#trash tbody').html());
+                        $('#trash tbody').html("");
+                    }
+                    $('#entries tbody tr').each(function (index, element) {
+                        var $this = $(this);
+                        var id = $this.attr('id');
+                        if (!_.contains(ids, id)) {
+                            $this.detach().appendTo('#trash');
+                        } else {
+                            $this.clone().appendTo('#trash');
+                        }
+                    });
+                    $('.pagination').html("");
+                    Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Table_1'], function (Selector, Table) {
+                        var tableElement = Ink.s('.ink-table');
+                        var tableObj = new Table(tableElement);
+                    });
+                }
+            })
+        });
         $('#online').change(function () {
             var $input = $(this);
             var online = $input.is(':checked');
@@ -101,6 +133,7 @@
 
         });
     });
+
     /*var modal = new Ink.UI.Modal('#modal');
     Ink.requireModules(['Ink.UI.Modal_1'], function (Modal) {
         new Modal('.ink-modal');

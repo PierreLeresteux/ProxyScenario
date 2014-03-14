@@ -76,6 +76,14 @@ function startBackoffice() {
             res.send(docs);
         });
     });
+    app.post('/entry/search', function (req, res) {
+        var search = req.body.q;
+        var regex = new RegExp(search);
+        console.log("Search : " + regex);
+        db.entry.find({url: { $regex: regex }}, function (err, docs) {
+            res.send(docs);
+        });
+    });
     app.get('/entry/:id', function (req, res) {
         db.entry.findOne({_id: req.params.id}, function (err, doc) {
             res.send(doc);

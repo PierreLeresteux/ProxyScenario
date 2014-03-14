@@ -18,7 +18,7 @@
                             <div class="control large-40 append-symbol">
                                 <span>
                                     <input data-submit="saveSettingsBaseUrl" type="text" id="baseUrl"
-                                       value="{{settings.baseUrl}}">
+                                           value="{{settings.baseUrl}}">
                                     <i class="icon-exchange"></i>
                                 </span>
                             </div>
@@ -75,7 +75,18 @@
     </div>
     <div id="entries" class="tabs-content">
         <h3>Entries :</h3>
-        <table class="ink-table alternating hover" data-page-size="30">
+
+        <form action="#" class="ink-form">
+            <div class="control-group">
+                <div class="column-group gutters">
+                    <div class="control large-60 append-button">
+                        <span><input data-input="searchEntry" type="text"/></span>
+                        <button id="searchEntry" class="ink-button"><i class="icon-search"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <table id="entries" class="ink-table alternating hover" data-page-size="30">
             <thead>
             <th data-sortable="true">Method</th>
             <th data-sortable="true">URL</th>
@@ -83,27 +94,21 @@
             <th>Actions</th>
             </thead>
             {{#each docs}}
-                <tr>
-                    <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
+                <tr id="{{this._id}}">
+                <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
                     <td style="margin-left:10px">{{this.url}}</td>
                     <td style="margin-left:10px">{{this.duration}} <span class="ink-badge"
                                                                          id="{{this._id}}_alert"></span></td>
                     <td><i class="toggl icon-edit icon-medium" data-target="#{{this._id}}_panel"></i></td>
                 </tr>
-                <!-- <tr id="{{this._id}}_panel" class="hide-all" style="display: none">
-            <td colspan="3">
-                <label class="content-right" for="{{this._id}}_bodyin">Request : </label><textarea
-                    id="{{this._id}}_bodyin">{{this.bodyIn}}</textarea>
-                <label class="content-right" for="{{this._id}}_bodyout">Response : </label><textarea
-                    id="{{this._id}}_bodyout">{{this.bodyOut}}</textarea>
-                <button data-entryid="{{this._id}}" class="modifyButton ink-button">Modify</button>
-            </td>
-        </tr>-->
             {{/each}}
         </table>
         <nav class="ink-navigation">
             <ul class="pagination"></ul>
         </nav>
+        <table id="trash" style="display:none;">
+
+        </table>
         <div class="ink-shade">
             <div id="modal" class="ink-modal" data-trigger=".icon-edit">
                 <div class="modal-header">

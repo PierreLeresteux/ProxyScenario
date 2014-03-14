@@ -68,7 +68,7 @@
             $.ajax({
                 type: 'PUT',
                 url: '/setting/' + currentId,
-                data: {'value': value },
+                data: '{"value": ' + value + ' }',
                 contentType: 'application/json',
                 success: function (data) {
                     console.log("OK : " + JSON.stringify(data));

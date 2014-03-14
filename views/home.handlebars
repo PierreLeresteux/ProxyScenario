@@ -24,14 +24,24 @@
                             </div>
                         </div>
                         <div class="control-group column-group">
+                            <label class="large-20 content-right">Status:</label>
+
+                            <div class="control large-10">
+                                <input id="online" type="checkbox" {{checkedOnline}}/>
+                            </div>
+                        </div>
+                        <div class="control-group column-group">
                             <label class="large-20 content-right">Port Proxy:</label>
 
                             <div class="control large-10">
                                 <input data-submit="saveSettingsPortProxy" type="text" id="portProxy"
                                        value="{{settings.portProxy}}">
                             </div>
-                            <div class="control large-20 content-left">
-                                <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
+                            <div class="control large-10 content-left">
+                            <button id="saveSettingsPortProxy" class="saveSettings ink-button">Save</button>
+                            </div>
+                            <div class="control large-30 content-left">
+                                <i class="ink-label error invert">need restart and can be dangerous !</i>
                             </div>
                         </div>
                         <div class="control-group column-group">
@@ -48,13 +58,7 @@
                                 <i class="ink-label error invert">need restart and can be dangerous !</i>
                             </div>
                         </div>
-                        <div class="control-group column-group">
-                            <label class="large-20 content-right">Status:</label>
 
-                            <div class="control large-10">
-                                <input id="online" type="checkbox" {{checkedOnline}}/>
-                            </div>
-                        </div>
                     </fieldset>
                 </form>
             </div>

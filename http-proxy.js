@@ -122,11 +122,11 @@ function startServer() {
     app.put('/setting/:id', function (req, res) {
         var key = req.params.id;
         var body = req.body;
-        console.log("Update setting key " + key);
-        console.log("Update setting value" + body.value);
+        console.log("Update setting key/key " + key + "/" + body.value);
         db.setting.update({key: key}, {$set: {value: body.value}}, { multi: true }, function (err, numReplaced) {
-            console.log("Updated row : " + numReplaced);
             if (numReplaced > 0) {
+                settings[key] = body.value;
+                db.setting.persistence.compactDatafile();
                 db.setting.findOne({key: key}, function (err, doc) {
                     res.send(doc);
                 });
@@ -149,6 +149,7 @@ function startServer() {
     });
     app.delete('/entry/:id', function (req, res) {
         db.entry.remove({_id: req.params.id}, function (err, doc) {
+            db.entry.persistence.compactDatafile();
             res.status(204).send('No content');
         });
 
@@ -159,6 +160,7 @@ function startServer() {
         console.log("Update entry " + id);
         db.entry.update({_id: id}, {$set: body}, function (err, numReplaced) {
             if (numReplaced > 0) {
+                db.entry.persistence.compactDatafile();
                 db.entry.findOne({_id: id}, function (err, doc) {
                     res.send(doc);
                 });

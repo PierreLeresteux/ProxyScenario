@@ -96,7 +96,7 @@
                     <td style="margin-left:10px">{{this.url}}</td>
                     <td style="margin-left:10px">{{this.duration}} <span class="ink-badge"
                                                                          id="{{this._id}}_alert"></span></td>
-                    <td><i class="toggl icon-edit icon-medium" data-target="#{{this._id}}_panel"></i></td>
+                    <td><i class="openModal icon-edit icon-medium" data-target="{{this._id}}"></i></td>
                 </tr>
             {{/each}}
         </table>
@@ -107,8 +107,8 @@
 
         </table>
         <div class="ink-shade">
-            <div id="modal" class="ink-modal" data-trigger=".icon-edit">
-                <div class="modal-header">
+            <div id="modal" class="ink-modal">
+            <div class="modal-header">
                     <button class="modal-close ink-dismiss"></button>
                     <h5>Edit the entry</h5></div>
                 <div class="modal-body"></div>

@@ -92,6 +92,17 @@
                 }
             })
         });
+        $('.openModal').click(function () {
+            var id = $(this).attr('data-target');
+            $.ajax({
+                type: 'GET',
+                url: '/entry/' + id,
+                contentType: 'application/json',
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        });
         $('#online').change(function () {
             var $input = $(this);
             var online = $input.is(':checked');

@@ -100,6 +100,7 @@
                 contentType: 'application/json',
                 success: function (data) {
                     console.log(data);
+                    $('#modal_id').html(data.method + " " + data.url);
                 }
             })
         });

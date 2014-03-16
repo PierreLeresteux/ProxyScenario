@@ -104,17 +104,16 @@
             <ul class="pagination"></ul>
         </nav>
         <table id="trash" style="display:none;">
-
         </table>
-        <div class="ink-shade">
-            <div id="modal" class="ink-modal">
-            <div class="modal-header">
+        <div class="ink-shade fade">
+            <div id="modal" class="ink-modal" data-trigger=".openModal">
+                <div class="modal-header">
                     <button class="modal-close ink-dismiss"></button>
-                    <h5>Edit the entry</h5></div>
+                    <h5>Edit the entry <span id="modal_id"></span></h5></div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button data-entryid="{{this._id}}" class="modifyButton ink-button blue">Modify</button>
-                    <button class="ink-button modal-close">Cancel</button>
+                    <button class="ink-button ink-dismiss">Cancel</button>
                 </div>
             </div>
         </div>

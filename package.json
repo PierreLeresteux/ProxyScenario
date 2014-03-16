@@ -1,5 +1,4 @@
-{ "name" : "ProxyScenario"
-    , "version" : "1.0.0"
+{ "name" : "ProxyScenario", "version": "1.1.0"
     , "description" : "A proxy to record scenario"
     , "main" : "http-proxy.js",
     "dependencies": {

@@ -114,6 +114,9 @@
                 contentType: 'application/json'
             })
         });
+        $('#refresh').click(function(){
+            location.reload();
+        });
         $('.saveSettings').click(function () {
             var $btn = $(this);
             var submitId = $btn.attr('id');

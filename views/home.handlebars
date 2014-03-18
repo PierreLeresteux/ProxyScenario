@@ -97,7 +97,18 @@
                     <td style="margin-left:10px">{{this.url}}</td>
                     <td style="margin-left:10px">{{this.duration}} <span class="ink-badge"
                                                                          id="{{this._id}}_alert"></span></td>
-                    <td><i class="openModal icon-edit icon-medium" data-target="{{this._id}}"></i></td>
+                    <td>
+                        <span>
+                        <i class="openModal tooltip icon-edit icon-medium" data-target="{{this._id}}"
+                           data-tip-text="Open Edit panel"
+                           data-tip-where="up"></i>
+                        </span>
+                        <span>
+                            <i class="deleteEntry tooltip icon-trash icon-medium" data-target="{{this._id}}"
+                                data-tip-text="Delete this entry from cache"
+                                data-tip-where="up"></i>
+                        </span>
+                    </td>
                 </tr>
             {{/each}}
         </table>

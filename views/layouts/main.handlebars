@@ -22,6 +22,14 @@
             margin-top: 10px;
         }
 
+        .deleteEntry:hover{
+            color: red;
+        }
+
+        .openModal:hover{
+            color: springgreen;
+        }
+
     </style>
 </head>
 <body>
@@ -101,6 +109,17 @@
                 success: function (data) {
                     console.log(data);
                     $('#modal_id').html(data.method + " " + data.url);
+                }
+            })
+        });
+        $('.deleteEntry').click(function(){
+            var id = $(this).attr('data-target');
+            $.ajax({
+                type: 'DELETE',
+                url: '/entry/' + id,
+                contentType: 'application/json',
+                success: function (data) {
+                    $('tr#'+id).remove();
                 }
             })
         });

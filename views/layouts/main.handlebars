@@ -168,6 +168,22 @@
         $('#refresh').click(function(){
             location.reload();
         });
+        $('#modalInTgt').click(function () {
+            $(this).hide();
+            $('#modalInSrc').show();
+        });
+        $('#modalInSrc').click(function () {
+            $(this).hide();
+            $('#modalInTgt').show();
+        });
+        $('#modalOutTgt').click(function () {
+            $(this).hide();
+            $('#modalOutSrc').show();
+        });
+        $('#modalOutSrc').click(function () {
+            $(this).hide();
+            $('#modalOutTgt').show();
+        });
         $('.saveSettings').click(function () {
             var $btn = $(this);
             var submitId = $btn.attr('id');

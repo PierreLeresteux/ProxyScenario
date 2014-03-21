@@ -111,14 +111,15 @@
             <th data-sortable="true">Method</th>
             <th data-sortable="true">URL</th>
             <th data-sortable="true">Duration</th>
+            <th data-sortable="true">Hits</th>
             <th>Actions</th>
             </thead>
             {{#each docs}}
                 <tr id="{{this._id}}">
                     <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
                     <td style="margin-left:10px">{{this.url}}</td>
-                    <td style="margin-left:10px">{{this.duration}} <span class="ink-badge"
-                                                                         id="{{this._id}}_alert"></span></td>
+                    <td style="margin-left:10px">{{this.duration}}</td>
+                    <td style="margin-left:10px">{{this.hits}}</td>
                     <td>
                         <span>
                         <i class="openModal tooltip icon-edit icon-medium" data-target="{{this._id}}"

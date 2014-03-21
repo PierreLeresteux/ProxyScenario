@@ -179,6 +179,7 @@ function startServer() {
                         var startDate = new Date();
                         var options = {
                             host: settings['baseUrl'],
+                            port:settings['basePort'],
                             path: url,
                             method: method,
                             headers: req.headers

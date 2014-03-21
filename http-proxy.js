@@ -77,7 +77,7 @@ function startBackoffice() {
         });
     });
     app.delete('/entry', function (req, res) {
-        db.entry.remove({},{ multi: true }, function (err, docs) {
+        db.entry.remove({}, { multi: true }, function (err, docs) {
             db.entry.persistence.compactDatafile();
             res.status(204).send('No content');
         });
@@ -153,15 +153,6 @@ function startBackoffice() {
 function startServer() {
     db.entry = new Datastore(databaseDir + '/entry.db');
     db.entry.loadDatabase();
-
-
-    process.argv.forEach(function (val, index, array) {
-
-        if (val == 'eraseDB') {
-            console.log("Erase DB");
-            db.entry.remove({}, { multi: true });
-        }
-    });
     server = http.createServer(function (req, res) {
 
         var bodyIn = '';
@@ -185,7 +176,7 @@ function startServer() {
                         var startDate = new Date();
                         var options = {
                             host: settings['baseUrl'],
-                            port:settings['basePort'],
+                            port: settings['basePort'],
                             path: url,
                             method: method,
                             headers: req.headers

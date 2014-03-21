@@ -12,6 +12,7 @@
     <script src="static/js/ink.modal.js"></script>
     <script src="static/js/underscore.min.js"></script>
     <script src="static/js/autoload.js"></script>
+    <script src="static/js/jsonFormat.js"></script>
     <script src="static/js/jquery.onoff.min.js"></script>
     <style>
         body {
@@ -28,6 +29,12 @@
 
         .openModal:hover{
             color: springgreen;
+        }
+
+        #modalInTgt, #modalOutTgt {
+            font-family: monospace;
+            white-space: pre;
+        / / or pre-wrap / / All fails without this one !
         }
 
     </style>
@@ -109,6 +116,11 @@
                 success: function (data) {
                     console.log(data);
                     $('#modal_id').html(data.method + " " + data.url);
+                    $('#hits').html("Number of hits : " + data.hits);
+                    $('#modalInSrc').html(data.bodyIn).hide();
+                    $('#modalOutSrc').html(data.bodyOut).hide();
+                    $('#modalInTgt').jsonFormat('#modalInSrc');
+                    $('#modalOutTgt').jsonFormat('#modalOutSrc');
                 }
             })
         });

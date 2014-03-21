@@ -143,6 +143,16 @@
                 contentType: 'application/json'
             })
         });
+        $('#bypass').change(function () {
+            var $input = $(this);
+            var bypass = $input.is(':checked');
+            $.ajax({
+                type: 'PUT',
+                url: '/setting/bypass',
+                data: '{"value": ' + bypass + ' }',
+                contentType: 'application/json'
+            })
+        });
         $('#refresh').click(function(){
             location.reload();
         });
@@ -177,14 +187,6 @@
 
         });
     });
-
-    /*var modal = new Ink.UI.Modal('#modal');
-    Ink.requireModules(['Ink.UI.Modal_1'], function (Modal) {
-        new Modal('.ink-modal');
-    });
-    modal.onShow(function () {
-        console.log("Show modal");
-    });*/
     $('input[type="checkbox"]').onoff();
 </script>
 </body>

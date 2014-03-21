@@ -140,6 +140,9 @@ function startBackoffice() {
                 },
                 checkedOnline: function () {
                     return this.settings.online == true ? ' checked=checked ' : '';
+                },
+                checkedBypass: function () {
+                    return this.settings.bypass == true ? ' checked=checked ' : '';
                 }
             }
             });
@@ -149,6 +152,49 @@ function startBackoffice() {
     app.use('/static', express.static('views/static'));
     app.listen(settings['portAdmin']);
     console.log("Admin interface on port " + settings['portAdmin']);
+}
+function realApiCall(url, method, req, bodyIn, res) {
+    if (settings['online']) {
+        var startDate = new Date();
+        var options = {
+            host: settings['baseUrl'],
+            port: settings['basePort'],
+            path: url,
+            method: method,
+            headers: req.headers
+        };
+        callback = function (response) {
+            var str = '';
+
+            response.on('data', function (chunk) {
+                str += chunk;
+            });
+
+            response.on('end', function () {
+                var endDate = new Date();
+                var entry = {
+                    method: method,
+                    url: url,
+                    bodyOut: str,
+                    bodyIn: bodyIn,
+                    duration: endDate - startDate
+                };
+                db.entry.insert(entry);
+                console.log("New entry recorded : " + method + ":" + url);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(str);
+                res.end();
+            });
+        };
+        var realReq = http.request(options, callback);
+        realReq.write(bodyIn);
+        realReq.end();
+
+    } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.write('{"error":"Content not yet recorded"}');
+        res.end();
+    }
 }
 function startServer() {
     db.entry = new Datastore(databaseDir + '/entry.db');
@@ -165,6 +211,9 @@ function startServer() {
             var method = req.method;
             var query = {url: url, method: method, bodyIn: bodyIn};
 
+            if (settings['bypass']) {
+                realApiCall(url, method, req, bodyIn, res);
+            } else {
             db.entry.findOne(query, function (err, doc) {
                 if (null != doc) {
                     console.log("Find entry : " + method + ":" + url);
@@ -172,49 +221,10 @@ function startServer() {
                     res.write(doc.bodyOut);
                     res.end();
                 } else {
-                    if (settings['online']) {
-                        var startDate = new Date();
-                        var options = {
-                            host: settings['baseUrl'],
-                            port: settings['basePort'],
-                            path: url,
-                            method: method,
-                            headers: req.headers
-                        };
-                        callback = function (response) {
-                            var str = '';
-
-                            response.on('data', function (chunk) {
-                                str += chunk;
-                            });
-
-                            response.on('end', function () {
-                                var endDate = new Date();
-                                var entry = {
-                                    method: method,
-                                    url: url,
-                                    bodyOut: str,
-                                    bodyIn: bodyIn,
-                                    duration: endDate - startDate
-                                };
-                                db.entry.insert(entry);
-                                console.log("New entry recorded : " + method + ":" + url);
-                                res.writeHead(200, { 'Content-Type': 'application/json' });
-                                res.write(str);
-                                res.end();
-                            });
-                        };
-                        var realReq = http.request(options, callback);
-                        realReq.write(bodyIn);
-                        realReq.end();
-
-                    } else {
-                        res.writeHead(404, { 'Content-Type': 'application/json' });
-                        res.write('{"error":"Content not yet recorded","request":' + JSON.stringify(query) + '}');
-                        res.end();
-                    }
+                    realApiCall(url, method, req, bodyIn, res);
                 }
             });
+            }
         });
     }).listen(settings['portProxy']);
     console.log("Mock API on port " + settings['portProxy']);

@@ -1,5 +1,6 @@
 {"key":"basePort","value":"80","_id":"basePort"}
 {"key":"baseUrl","value":"api.openweathermap.org","_id":"baseUrl"}
+{"key":"bypass","value":false,"_id":"bypass"}
 {"key":"online","value":true,"_id":"online"}
 {"key":"portAdmin","value":"3000","_id":"portAdmin"}
 {"key":"portProxy","value":"8888","_id":"portProxy"}

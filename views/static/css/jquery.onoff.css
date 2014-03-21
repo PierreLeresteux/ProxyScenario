@@ -50,12 +50,20 @@
     background-color: #79E88C;
 }
 
+.bypass .onoffswitch-inner:before {
+    content: "On";
+}
+
 .onoffswitch-inner:after {
     content: "Offline";
     padding-right: 10px;
     color: #999999;
     background-color: #EEEEEE;
     text-align: right;
+}
+
+.bypass .onoffswitch-inner:after {
+    content: "Off";
 }
 
 .onoffswitch-switch {

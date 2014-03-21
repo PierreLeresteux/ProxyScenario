@@ -76,6 +76,12 @@ function startBackoffice() {
             res.send(docs);
         });
     });
+    app.delete('/entry', function (req, res) {
+        db.entry.remove({},{ multi: true }, function (err, docs) {
+            db.entry.persistence.compactDatafile();
+            res.status(204).send('No content');
+        });
+    });
     app.post('/entry/search', function (req, res) {
         var search = req.body.q;
         var regex = new RegExp(search);
@@ -153,7 +159,7 @@ function startServer() {
 
         if (val == 'eraseDB') {
             console.log("Erase DB");
-            db.entry.remove({}, {});
+            db.entry.remove({}, { multi: true });
         }
     });
     server = http.createServer(function (req, res) {

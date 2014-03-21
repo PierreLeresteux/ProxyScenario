@@ -112,6 +112,16 @@
                 }
             })
         });
+        $('#deleteAllEntries').click(function(){
+            $.ajax({
+                type: 'DELETE',
+                url: '/entry/',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('#entriesTable>tr').html("");
+                }
+            })
+        });
         $('.deleteEntry').click(function(){
             var id = $(this).attr('data-target');
             $.ajax({

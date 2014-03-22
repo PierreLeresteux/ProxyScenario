@@ -147,31 +147,26 @@
                     <h5>Edit the entry <span id="modal_id"></span></h5></div>
                 <div class="modal-body control-group">
                     <div id="hits">
-
                     </div>
                     <div class="column-group gutters ">
                         <div class="column-group large-50">
-                            <div id="modalInSrc">
-
+                            <div id="modalInSrc" contenteditable="true">
                             </div>
                             <div id="modalInTgt">
-
                             </div>
-
                         </div>
                         <div class="column-group large-50">
-
-                            <div id="modalOutTgt">
-
+                            <div id="modalOutSrc" contenteditable="true">
                             </div>
-                            <div id="modalOutSrc">
-
+                            <div id="modalOutTgt">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button data-entryid="{{this._id}}" class="modifyButton ink-button blue">Modify</button>
+                    <span id="entryId"/>
+                    <button class="modifyButton ink-button blue">Modify</button>
+                    <button class="saveButton ink-button green disabled">Save</button>
                     <button class="ink-button ink-dismiss">Cancel</button>
                 </div>
             </div>

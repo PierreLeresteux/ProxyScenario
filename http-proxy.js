@@ -105,18 +105,25 @@ function startBackoffice() {
     });
     app.put('/entry/:id', function (req, res) {
         var id = req.params.id;
-        var body = req.body;
-        console.log("Update entry " + id);
-        db.entry.update({_id: id}, {$set: body}, function (err, numReplaced) {
-            if (numReplaced > 0) {
-                db.entry.persistence.compactDatafile();
-                db.entry.findOne({_id: id}, function (err, doc) {
-                    res.send(doc);
-                });
-            } else {
-                res.status(404).send('Not modified');
-            }
+        var bodyIn = req.body.bodyIn;
+        var bodyOut = req.body.bodyOut;
+        db.entry.findOne({_id: req.params.id}, function (err, doc) {
+            console.log("Update entry " + id);
+            var body = doc;
+            body.bodyIn = bodyIn;
+            body.bodyOut = bodyOut;
+            db.entry.update({_id: id}, {$set: body}, function (err, numReplaced) {
+                if (numReplaced > 0) {
+                    db.entry.persistence.compactDatafile();
+                    db.entry.findOne({_id: id}, function (err, doc) {
+                        res.send(doc);
+                    });
+                } else {
+                    res.status(404).send('Not modified');
+                }
+            });
         });
+
 
     });
     // UI

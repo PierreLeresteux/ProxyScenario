@@ -23,11 +23,11 @@
             margin-top: 10px;
         }
 
-        .deleteEntry:hover{
+        .deleteEntry:hover {
             color: red;
         }
 
-        .openModal:hover{
+        .openModal:hover {
             color: springgreen;
         }
 
@@ -45,35 +45,6 @@
 </div>
 <script>
     $(document).ready(function () {
-        var buttons = $(".modifyButton");
-        buttons.click(function () {
-            var id = $(this).data('entryid');
-            var bodyIn = $('#' + id + '_bodyin').val();
-            var bodyOut = $('#' + id + '_bodyout').val();
-            var $spanAlert = $('#' + id + '_alert');
-            console.log(JSON.stringify({ bodyIn: bodyIn, bodyOut: bodyOut }));
-            $spanAlert.removeClass("red").removeClass("green");
-            $.ajax({
-                type: 'PUT',
-                url: '/entry/' + id,
-                data: JSON.stringify({ bodyIn: bodyIn, bodyOut: bodyOut }),
-                contentType: 'application/json',
-                success: function (data) {
-                    $spanAlert.addClass("green");
-                    $spanAlert.text("Saved");
-                    setTimeout(function () {
-                        $spanAlert.text("")
-                    }, 2000);
-                },
-                error: function (xhr, type) {
-                    $spanAlert.addClass("red");
-                    $spanAlert.text("Error during the save");
-                    setTimeout(function () {
-                        $spanAlert.text("")
-                    }, 5000);
-                }
-            })
-        });
 
         $('#searchEntry').click(function () {
             var $input = $('input[data-input=searchEntry]');
@@ -121,10 +92,11 @@
                     $('#modalOutSrc').html(data.bodyOut).hide();
                     $('#modalInTgt').jsonFormat('#modalInSrc');
                     $('#modalOutTgt').jsonFormat('#modalOutSrc');
+                    $('#entryId').attr("data-id", data._id);
                 }
             })
         });
-        $('#deleteAllEntries').click(function(){
+        $('#deleteAllEntries').click(function () {
             $.ajax({
                 type: 'DELETE',
                 url: '/entry/',
@@ -134,14 +106,14 @@
                 }
             })
         });
-        $('.deleteEntry').click(function(){
+        $('.deleteEntry').click(function () {
             var id = $(this).attr('data-target');
             $.ajax({
                 type: 'DELETE',
                 url: '/entry/' + id,
                 contentType: 'application/json',
                 success: function (data) {
-                    $('tr#'+id).remove();
+                    $('tr#' + id).remove();
                 }
             })
         });
@@ -163,26 +135,42 @@
                 url: '/setting/bypass',
                 data: '{"value": ' + bypass + ' }',
                 contentType: 'application/json'
-            })
+            });
         });
-        $('#refresh').click(function(){
+        $('#refresh').click(function () {
             location.reload();
         });
-        $('#modalInTgt').click(function () {
-            $(this).hide();
-            $('#modalInSrc').show();
+        $('.modifyButton').click(function () {
+            $('#modalInSrc').toggle();
+            $('#modalInTgt').toggle();
+            $('#modalOutSrc').toggle();
+            $('#modalOutTgt').toggle();
+            $('.saveButton').toggleClass("disabled");
         });
-        $('#modalInSrc').click(function () {
-            $(this).hide();
-            $('#modalInTgt').show();
-        });
-        $('#modalOutTgt').click(function () {
-            $(this).hide();
-            $('#modalOutSrc').show();
-        });
-        $('#modalOutSrc').click(function () {
-            $(this).hide();
-            $('#modalOutTgt').show();
+        $('.saveButton').click(function () {
+            var bodyIn = $('#modalInSrc').html();
+            var bodyOut = $('#modalOutSrc').html();
+            var id = $('#entryId').attr("data-id");
+            $.ajax({
+                type: 'PUT',
+                url: '/entry/' + id,
+                data: '{"bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('.saveButton').text("Saved");
+                    setTimeout(function () {
+                        $('.saveButton').text("Save");
+                        $('#modalInTgt').jsonFormat('#modalInSrc');
+                        $('#modalOutTgt').jsonFormat('#modalOutSrc');
+                    }, 2000);
+                },
+                error: function (xhr, type) {
+                    $('.saveButton').text("Error...").removeClass('green').addClass('red');
+                    setTimeout(function () {
+                        $('.saveButton').text("Save").removeClass('red').addClass('green');
+                    }, 5000);
+                }
+            })
         });
         $('.saveSettings').click(function () {
             var $btn = $(this);

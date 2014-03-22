@@ -1,9 +1,14 @@
-{ "name" : "ProxyScenario", "version": "1.1.0"
-    , "description" : "A proxy to record scenario"
-    , "main" : "http-proxy.js",
+{ "name": "ProxyScenario",
+    "version": "1.1.0",
+    "description": "A proxy to record scenario",
+    "main": "http-proxy.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/PierreLeresteux/ProxyScenario.git"
+    },
     "dependencies": {
         "http-proxy": ">= 1.0.x",
-        "nedb":">= 0.10.x",
+        "nedb": ">= 0.10.x",
         "express": "3.x",
         "express3-handlebars": ">= 0.5.x"
     }

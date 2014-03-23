@@ -212,7 +212,28 @@
 
         });
     });
+    $('.menu-entry').click(function () {
+        doStatPoll();
+    });
     $('input[type="checkbox"]').onoff();
+    var uptimeout = {};
+    function doStatPoll() {
+        $.getJSON('/stat', function (data) {
+            if ($('#stats').is(':visible')) {
+                $('#stat-call').html(data['call']);
+                $('#stat-hitcache').html(data['hit-cache']);
+                $('#stat-misscache').html(data['miss-cache']);
+                $('#stat-realcall').html(data['real-call']);
+                $('#stat-entriesnumber').html(data['entries-number']);
+                $('#stat-uptime').html(data['uptime']);
+                uptimeout = setTimeout(doStatPoll, 1000);
+            } else {
+                clearTimeout(uptimeout);
+            }
+
+        });
+    }
+    doStatPoll();
 </script>
 </body>
 </html>

@@ -11,7 +11,8 @@ var server = {},
         "hit-cache": 0,
         "miss-cache": 0,
         "real-call": 0,
-        "entries-number": 0
+        "entries-number": 0,
+        "uptime": 0
     };
 sockets = [],
     settings = {};
@@ -22,6 +23,10 @@ function checkDatabaseDir() {
     if (!fs.existsSync(databaseDir)) {
         fs.mkdirSync(databaseDir);
     }
+}
+function uptime() {
+    statistics['uptime'] = statistics['uptime'] + 1;
+    setTimeout(uptime, 1000);
 }
 function loadSettingsAndStartServer() {
     checkDatabaseDir();
@@ -228,6 +233,7 @@ function startServer() {
     db.entry.count({}, function (err, count) {
         statistics['entries-number'] = count;
     });
+    uptime();
     server = http.createServer(function (req, res) {
 
         var bodyIn = '';

@@ -1,9 +1,9 @@
 <h1>Admin Web Interface</h1>
 <div class="ink-tabs left">
     <ul class="tabs-nav">
-        <li><a href="#settings">Settings</a></li>
-        <li><a href="#entries">Entries</a></li>
-
+        <li><a class="menu-entry" href="#settings">Settings</a></li>
+        <li><a class="menu-entry" href="#stats">Statistics</a></li>
+        <li><a class="menu-entry" href="#entries">Entries</a></li>
     </ul>
     <div id="settings" class="tabs-content">
         <h3>Settings :</h3>
@@ -169,6 +169,36 @@
                     <button class="saveButton ink-button green disabled">Save</button>
                     <button class="ink-button ink-dismiss">Cancel</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="stats" class="tabs-content">
+        <h3>Statistics</h3>
+
+        <div class="ink-grid">
+            <div class="column-group">
+                <div class="large-20">Calls :</div>
+                <div class="large-20" id="stat-call"></div>
+            </div>
+            <div class="column-group">
+                <div class="large-20">Hit cache :</div>
+                <div class="large-20" id="stat-hitcache"></div>
+            </div>
+            <div class="column-group">
+                <div class="large-20">Miss cache :</div>
+                <div class="large-20" id="stat-misscache"></div>
+            </div>
+            <div class="column-group">
+                <div class="large-20">Real calls :</div>
+                <div class="large-20" id="stat-realcall"></div>
+            </div>
+            <div class="column-group">
+                <div class="large-20">Entries number :</div>
+                <div class="large-20" id="stat-entriesnumber"></div>
+            </div>
+            <div class="column-group">
+                <div class="large-20">Uptime :</div>
+                <div class="large-20" id="stat-uptime"></div>
             </div>
         </div>
     </div>

@@ -91,8 +91,8 @@
                     console.log(data);
                     $('#modal_id').html(data.method + " " + data.url);
                     $('#hits').html("Number of hits : " + data.hits);
-                    $('#modalInSrc').html(data.bodyIn).hide();
-                    $('#modalOutSrc').html(data.bodyOut).hide();
+                    $('#modalInSrc').html(JSON.stringify(data.bodyIn)).hide();
+                    $('#modalOutSrc').html(JSON.stringify(data.bodyOut)).hide();
                     $('#modalInTgt').jsonFormat('#modalInSrc');
                     $('#modalOutTgt').jsonFormat('#modalOutSrc');
                     $('#entryId').attr("data-id", data._id);

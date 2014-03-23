@@ -7,7 +7,6 @@
         "url": "https://github.com/PierreLeresteux/ProxyScenario.git"
     },
     "dependencies": {
-        "http-proxy": ">= 1.0.x",
         "nedb": ">= 0.10.x",
         "express": "3.x",
         "express3-handlebars": ">= 0.5.x"

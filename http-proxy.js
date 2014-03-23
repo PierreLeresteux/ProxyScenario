@@ -1,13 +1,19 @@
 var databaseDir = 'database';
 var http = require('http'),
-    httpProxy = require('http-proxy'),
     express = require('express'),
     exphbs = require('express3-handlebars'),
     Datastore = require('nedb'),
     fs = require('fs'),
     db = new Datastore({filename: databaseDir});
 var server = {},
-    sockets = [],
+    statistics = {
+        "call": 0,
+        "hit-cache": 0,
+        "miss-cache": 0,
+        "real-call": 0,
+        "entries-number": 0
+    };
+sockets = [],
     settings = {};
 loadSettingsAndStartServer();
 
@@ -40,6 +46,9 @@ function startBackoffice() {
     app.engine('handlebars', exphbs({defaultLayout: 'main'}));
     app.set('view engine', 'handlebars');
     //Routes
+    app.get('/stat', function (req, res) {
+        res.send(statistics);
+    });
     app.get('/setting', function (req, res) {
         db.setting.find({}, function (err, docs) {
             res.send(docs);
@@ -196,6 +205,7 @@ function realApiCall(url, method, req, bodyIn, res) {
                     hits: 1
                 };
                 db.entry.insert(entry);
+                statistics['entries-number'] = statistics['entries-number'] + 1;
                 console.log("New entry recorded : " + method + ":" + url);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.write(JSON.stringify(str));
@@ -205,7 +215,7 @@ function realApiCall(url, method, req, bodyIn, res) {
         var realReq = http.request(options, callback);
         realReq.write(bodyIn);
         realReq.end();
-
+        statistics['real-call'] = statistics['real-call'] + 1;
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.write('{"error":"Content not yet recorded"}');
@@ -215,6 +225,9 @@ function realApiCall(url, method, req, bodyIn, res) {
 function startServer() {
     db.entry = new Datastore(databaseDir + '/entry.db');
     db.entry.loadDatabase();
+    db.entry.count({}, function (err, count) {
+        statistics['entries-number'] = count;
+    });
     server = http.createServer(function (req, res) {
 
         var bodyIn = '';
@@ -223,6 +236,7 @@ function startServer() {
         });
 
         req.on('end', function () {
+            statistics['call'] = statistics['call'] + 1;
             var url = req.url;
             var method = req.method;
             var query = {url: url, method: method, bodyIn: bodyIn};
@@ -230,19 +244,21 @@ function startServer() {
             if (settings['bypass']) {
                 realApiCall(url, method, req, bodyIn, res);
             } else {
-            db.entry.findOne(query, function (err, doc) {
-                if (null != doc) {
-                    console.log("Find entry : " + method + ":" + url);
-                    db.entry.update({_id: doc._id}, {$set: {hits: doc.hits + 1}}, function (err, numReplaced) {
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.write(JSON.stringify(doc.bodyOut));
-                        res.end();
-                    });
+                db.entry.findOne(query, function (err, doc) {
+                    if (null != doc) {
+                        statistics['hit-cache'] = statistics['hit-cache'] + 1;
+                        console.log("Find entry : " + method + ":" + url);
+                        db.entry.update({_id: doc._id}, {$set: {hits: doc.hits + 1}}, function (err, numReplaced) {
+                            res.writeHead(200, { 'Content-Type': 'application/json' });
+                            res.write(JSON.stringify(doc.bodyOut));
+                            res.end();
+                        });
 
-                } else {
-                    realApiCall(url, method, req, bodyIn, res);
-                }
-            });
+                    } else {
+                        statistics['miss-cache'] = statistics['miss-cache'] + 1;
+                        realApiCall(url, method, req, bodyIn, res);
+                    }
+                });
             }
         });
     }).listen(settings['portProxy']);

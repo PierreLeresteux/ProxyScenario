@@ -8,7 +8,8 @@ For now, it's only accept JSON requests and responses.
 _____________________________________________________________________________________________
 ##Current version
 -Current stable version is 1.0<br />
--Current beta version is 1.1
+-Current RC version is 1.1-RC1<br />
+-Current beta version is 1.2
 ####Changes in 1.1 :
 [ISSUES](https://github.com/PierreLeresteux/ProxyScenario/issues?milestone=1&page=1&state=closed "Issues closed") <br />
 

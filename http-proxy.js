@@ -178,6 +178,14 @@ function realApiCall(url, method, req, bodyIn, res) {
             });
 
             response.on('end', function () {
+                if (bodyIn == '') {
+                    bodyIn = '""';
+                }
+                if (str == '') {
+                    str = '""';
+                }
+                str = JSON.parse(str);
+                bodyIn = JSON.parse(bodyIn);
                 var endDate = new Date();
                 var entry = {
                     method: method,
@@ -190,7 +198,7 @@ function realApiCall(url, method, req, bodyIn, res) {
                 db.entry.insert(entry);
                 console.log("New entry recorded : " + method + ":" + url);
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write(str);
+                res.write(JSON.stringify(str));
                 res.end();
             });
         };
@@ -227,7 +235,7 @@ function startServer() {
                     console.log("Find entry : " + method + ":" + url);
                     db.entry.update({_id: doc._id}, {$set: {hits: doc.hits + 1}}, function (err, numReplaced) {
                         res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.write(doc.bodyOut);
+                        res.write(JSON.stringify(doc.bodyOut));
                         res.end();
                     });
 

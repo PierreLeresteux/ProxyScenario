@@ -34,7 +34,10 @@
         #modalInTgt, #modalOutTgt {
             font-family: monospace;
             white-space: pre;
-        / / or pre-wrap / / All fails without this one !
+        }
+
+        #modalInSrc, #modalOutSrc {
+            border: grey dashed 2px;
         }
 
     </style>
@@ -151,6 +154,12 @@
             var bodyIn = $('#modalInSrc').html();
             var bodyOut = $('#modalOutSrc').html();
             var id = $('#entryId').attr("data-id");
+            if (bodyIn == '') {
+                bodyIn = '""';
+            }
+            if (bodyOut == '') {
+                bodyOut = '""';
+            }
             $.ajax({
                 type: 'PUT',
                 url: '/entry/' + id,

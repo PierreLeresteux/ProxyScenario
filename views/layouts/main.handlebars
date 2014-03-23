@@ -12,6 +12,7 @@
     <script src="static/js/ink.modal.js"></script>
     <script src="static/js/underscore.min.js"></script>
     <script src="static/js/autoload.js"></script>
+    <script src="static/js/moment.min.js"></script>
     <script src="static/js/jsonFormat.js"></script>
     <script src="static/js/jquery.onoff.min.js"></script>
     <style>
@@ -225,7 +226,8 @@
                 $('#stat-misscache').html(data['miss-cache']);
                 $('#stat-realcall').html(data['real-call']);
                 $('#stat-entriesnumber').html(data['entries-number']);
-                $('#stat-uptime').html(data['uptime']);
+                var uptime = data['uptime'];
+                $('#stat-uptime').html(moment().subtract('seconds', uptime).fromNow());
                 uptimeout = setTimeout(doStatPoll, 1000);
             } else {
                 clearTimeout(uptimeout);

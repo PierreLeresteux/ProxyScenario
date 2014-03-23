@@ -227,7 +227,7 @@
                 $('#stat-realcall').html(data['real-call']);
                 $('#stat-entriesnumber').html(data['entries-number']);
                 var uptime = data['uptime'];
-                $('#stat-uptime').html(moment().subtract('seconds', uptime).fromNow());
+                $('#stat-uptime').html(uptime + "s (" + moment().subtract('seconds', uptime).fromNow() + ")");
                 uptimeout = setTimeout(doStatPoll, 1000);
             } else {
                 clearTimeout(uptimeout);

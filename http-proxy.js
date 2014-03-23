@@ -93,6 +93,7 @@ function startBackoffice() {
     app.delete('/entry', function (req, res) {
         db.entry.remove({}, { multi: true }, function (err, docs) {
             db.entry.persistence.compactDatafile();
+            statistics['entries-number'] = 0;
             res.status(204).send('No content');
         });
     });

@@ -246,7 +246,7 @@ function startServer() {
             statistics['call'] = statistics['call'] + 1;
             var url = req.url;
             var method = req.method;
-            var query = {url: url, method: method, bodyIn: bodyIn};
+            var query = {url: url, method: method, bodyIn: JSON.parse(bodyIn)};
 
             if (settings['bypass']) {
                 realApiCall(url, method, req, bodyIn, res);

@@ -9,7 +9,10 @@ ________________________________________________________________________________
 ##Current version
 -Current stable version is 1.0<br />
 -Current RC version is 1.1-RC1<br />
--Current beta version is 1.2
+-Current beta version is 1.1.1
+####Changes in 1.1.1 :
+- Add missing images
+- Fix bug to match entry (bodyIn in wrong type)
 ####Changes in 1.1 :
 [ISSUES](https://github.com/PierreLeresteux/ProxyScenario/issues?milestone=1&page=1&state=closed "Issues closed") <br />
 

@@ -86,13 +86,22 @@ $(document).ready(function () {
             }
         })
     });
+    $('.click-button').click(function () {
+        $('.click-button').addClass('disabled');
+        $(this).removeClass('disabled');
+        $('#url').focus();
+    });
     $('#createEntry').click(function () {
         Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Modal_1'], function (Selector, Modal) {
             var modalElement = Ink.s('#modal');
             var modalObj = new Modal(modalElement);
             $('#modal_id').html(" ");
+            $('#url-panel').show();
+            $('.click-button').addClass('disabled');
+            $('#url').val("");
             $('#modal-title').html("Create a new entry");
-            $('#hits').html("Number of hits : 0");
+            $('#hits').hide();
+            $('#url-panel').show();
             $('#modalInSrc').html(JSON.stringify({})).hide();
             $('#modalOutSrc').html(JSON.stringify({})).hide();
             $('#modalInTgt').jsonFormat('#modalInSrc');
@@ -116,6 +125,8 @@ $(document).ready(function () {
             success: function (data) {
                 $('#modal_id').html(data.method + " " + data.url);
                 $('#modal-title').html("Edit the entry");
+                $('#hits').show();
+                $('#url-panel').hide();
                 $('#hits').html("Number of hits : " + data.hits);
                 $('#modalInSrc').html(JSON.stringify(data.bodyIn)).hide();
                 $('#modalOutSrc').html(JSON.stringify(data.bodyOut)).hide();
@@ -195,26 +206,57 @@ $(document).ready(function () {
         if (bodyOut == '') {
             bodyOut = '""';
         }
-        $.ajax({
-            type: 'PUT',
-            url: '/entry/' + id,
-            data: '{"bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
-            contentType: 'application/json',
-            success: function (data) {
-                $('.saveButton').text("Saved");
-                setTimeout(function () {
-                    $('.saveButton').text("Save");
-                    $('#modalInTgt').jsonFormat('#modalInSrc');
-                    $('#modalOutTgt').jsonFormat('#modalOutSrc');
-                }, 2000);
-            },
-            error: function (xhr, type) {
-                $('.saveButton').text("Error...").removeClass('green').addClass('red');
-                setTimeout(function () {
-                    $('.saveButton').text("Save").removeClass('red').addClass('green');
-                }, 5000);
+        if (id) {
+            $.ajax({
+                type: 'PUT',
+                url: '/entry/' + id,
+                data: '{"bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
+                contentType: 'application/json',
+                success: function (data) {
+                    $('.saveButton').text("Saved");
+                    setTimeout(function () {
+                        $('.saveButton').text("Save");
+                        $('#modalInTgt').jsonFormat('#modalInSrc');
+                        $('#modalOutTgt').jsonFormat('#modalOutSrc');
+                    }, 2000);
+                },
+                error: function (xhr, type) {
+                    $('.saveButton').text("Error...").removeClass('green').addClass('red');
+                    setTimeout(function () {
+                        $('.saveButton').text("Save").removeClass('red').addClass('green');
+                    }, 5000);
+                }
+            })
+        } else {
+            var method = $('.click-button').not('.disabled').html();
+            if (method) {
+                var url = $('#url').val();
+                if (url) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/entry/',
+                        data: '{"url":"' + url + '","method":"' + method + '","bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            $('.saveButton').text("Created");
+                            setTimeout(function () {
+                                Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Modal_1'], function (Selector, Modal) {
+                                    var modalElement = Ink.s('#modal');
+                                    var modalObj = new Modal(modalElement);
+                                    modalObj.dismiss();
+                                });
+                            }, 1000);
+                        },
+                        error: function (xhr, type) {
+                            $('.saveButton').text("Error...").removeClass('green').addClass('red');
+                            setTimeout(function () {
+                                $('.saveButton').text("Create").removeClass('red').addClass('green');
+                            }, 5000);
+                        }
+                    })
+                }
             }
-        })
+        }
     });
     $('.saveSettings').click(function () {
         var $btn = $(this);

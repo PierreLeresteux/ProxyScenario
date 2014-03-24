@@ -97,6 +97,16 @@ function startBackoffice() {
             res.status(204).send('No content');
         });
     });
+    app.post('/entry', function (req, res) {
+        var body = req.body;
+        body['duration'] = 0;
+        body['hits'] = 0;
+        db.entry.insert(body, function (err, doc) {
+            console.log("New entry " + doc._id);
+            res.send(doc);
+        });
+    });
+
     app.post('/entry/search', function (req, res) {
         var search = req.body.q;
         var regex = new RegExp(search);
@@ -141,7 +151,7 @@ function startBackoffice() {
 
 
     });
-    // UI
+// UI
     app.get('/', function (req, res) {
         db.entry.find({}, function (err, docs) {
             res.render('home', {docs: docs, settings: settings, helpers: {
@@ -246,6 +256,9 @@ function startServer() {
             statistics['call'] = statistics['call'] + 1;
             var url = req.url;
             var method = req.method;
+            if (bodyIn == "") {
+                bodyIn = "{}";
+            }
             var query = {url: url, method: method, bodyIn: JSON.parse(bodyIn)};
 
             if (settings['bypass']) {
@@ -256,6 +269,7 @@ function startServer() {
                         statistics['hit-cache'] = statistics['hit-cache'] + 1;
                         console.log("Find entry : " + method + ":" + url);
                         db.entry.update({_id: doc._id}, {$set: {hits: doc.hits + 1}}, function (err, numReplaced) {
+                            db.entry.persistence.compactDatafile();
                             res.writeHead(200, { 'Content-Type': 'application/json' });
                             res.write(JSON.stringify(doc.bodyOut));
                             res.end();

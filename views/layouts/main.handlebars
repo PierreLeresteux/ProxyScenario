@@ -41,6 +41,10 @@
             border: grey dashed 2px;
         }
 
+        .clickable {
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -82,8 +86,9 @@
                 }
             })
         });
-        $('.openModal').click(function () {
-            var id = $(this).attr('data-target');
+        $('.clickable').click(function () {
+            var id = $(this).attr('id');
+            console.log("clickable " + id);
             $.ajax({
                 type: 'GET',
                 url: '/entry/' + id,
@@ -110,7 +115,8 @@
                 }
             })
         });
-        $('.deleteEntry').click(function () {
+        $('.deleteEntry').click(function (event) {
+            event.stopPropagation();
             var id = $(this).attr('data-target');
             $.ajax({
                 type: 'DELETE',
@@ -120,6 +126,8 @@
                     $('tr#' + id).remove();
                 }
             })
+
+            return false;
         });
         $('#online').change(function () {
             var $input = $(this);

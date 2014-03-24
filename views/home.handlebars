@@ -120,17 +120,12 @@
             <th>Actions</th>
             </thead>
             {{#each docs}}
-                <tr id="{{this._id}}">
-                    <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
+                <tr id="{{this._id}}" class="clickable">
+                <td><span class="ink-label {{getLabelColor}}">{{this.method}}</span></td>
                     <td style="margin-left:10px">{{this.url}}</td>
                     <td style="margin-left:10px">{{this.duration}}</td>
                     <td style="margin-left:10px">{{this.hits}}</td>
                     <td>
-                        <span>
-                        <i class="openModal tooltip icon-edit icon-medium" data-target="{{this._id}}"
-                           data-tip-text="Open Edit panel"
-                           data-tip-where="up"></i>
-                        </span>
                         <span>
                             <i class="deleteEntry tooltip icon-trash icon-medium" data-target="{{this._id}}"
                                data-tip-text="Delete this entry from cache"
@@ -146,8 +141,8 @@
         <table id="trash" style="display:none;">
         </table>
         <div class="ink-shade fade">
-            <div id="modal" class="ink-modal" data-trigger=".openModal">
-                <div class="modal-header">
+            <div id="modal" class="ink-modal" data-trigger=".clickable">
+            <div class="modal-header">
                     <button type="button" class="modal-close ink-dismiss"></button>
                     <h5>Edit the entry <span id="modal_id"></span></h5></div>
                 <div class="modal-body control-group">

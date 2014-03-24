@@ -52,198 +52,224 @@
     {{{body}}}
 </div>
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
 
-        $('#searchEntry').click(function () {
-            var $input = $('input[data-input=searchEntry]');
-            $.ajax({
-                type: 'POST',
-                url: '/entry/search',
-                data: '{"q": "' + $input.val() + '" }',
-                contentType: 'application/json',
-                success: function (data) {
-                    var ids = _.pluck(data, "_id");
-                    console.log(data.length);
-                    var $tr = $('#trash tbody tr');
-                    if ($tr.length > 0) {
-                        $('#entries tbody').html($('#trash tbody').html());
-                        $('#trash tbody').html("");
-                    }
-                    $('#entries tbody tr').each(function (index, element) {
-                        var $this = $(this);
-                        var id = $this.attr('id');
-                        if (!_.contains(ids, id)) {
-                            $this.detach().appendTo('#trash');
-                        } else {
-                            $this.clone().appendTo('#trash');
-                        }
-                    });
-                    $('.pagination').html("");
-                    Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Table_1'], function (Selector, Table) {
-                        var tableElement = Ink.s('.ink-table');
-                        var tableObj = new Table(tableElement);
-                    });
+    $('#searchEntry').click(function () {
+        var $input = $('input[data-input=searchEntry]');
+        $.ajax({
+            type: 'POST',
+            url: '/entry/search',
+            data: '{"q": "' + $input.val() + '" }',
+            contentType: 'application/json',
+            success: function (data) {
+                var ids = _.pluck(data, "_id");
+                console.log(data.length);
+                var $tr = $('#trash tbody tr');
+                if ($tr.length > 0) {
+                    $('#entries tbody').html($('#trash tbody').html());
+                    $('#trash tbody').html("");
                 }
-            })
+                $('#entries tbody tr').each(function (index, element) {
+                    var $this = $(this);
+                    var id = $this.attr('id');
+                    if (!_.contains(ids, id)) {
+                        $this.detach().appendTo('#trash');
+                    } else {
+                        $this.clone().appendTo('#trash');
+                    }
+                });
+                $('.pagination').html("");
+                Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Table_1'], function (Selector, Table) {
+                    var tableElement = Ink.s('.ink-table');
+                    var tableObj = new Table(tableElement);
+                });
+            }
+        })
+    });
+    $('#createEntry').click(function () {
+        Ink.requireModules(['Ink.Dom.Selector_1', 'Ink.UI.Modal_1'], function (Selector, Modal) {
+            var modalElement = Ink.s('#modal');
+            var modalObj = new Modal(modalElement);
+            $('#modal_id').html(" ");
+            $('#modal-title').html("Create a new entry");
+            $('#hits').html("Number of hits : 0");
+            $('#modalInSrc').html(JSON.stringify({})).hide();
+            $('#modalOutSrc').html(JSON.stringify({})).hide();
+            $('#modalInTgt').jsonFormat('#modalInSrc');
+            $('#modalOutTgt').jsonFormat('#modalOutSrc');
+            $('#entryId').attr("data-id", null);
+            $('#modalInSrc').show();
+            $('#modalInTgt').hide();
+            $('#modalOutSrc').show();
+            $('#modalOutTgt').hide();
+            $('.saveButton').removeClass("disabled").html("Create");
+            $('.modifyButton').hide();
+            modalObj.open();
         });
-        $('.clickable').click(function () {
-            var id = $(this).attr('id');
-            console.log("clickable " + id);
-            $.ajax({
-                type: 'GET',
-                url: '/entry/' + id,
-                contentType: 'application/json',
-                success: function (data) {
-                    console.log(data);
-                    $('#modal_id').html(data.method + " " + data.url);
-                    $('#hits').html("Number of hits : " + data.hits);
-                    $('#modalInSrc').html(JSON.stringify(data.bodyIn)).hide();
-                    $('#modalOutSrc').html(JSON.stringify(data.bodyOut)).hide();
+    });
+    $('.clickable').click(function () {
+        var id = $(this).attr('id');
+        $.ajax({
+            type: 'GET',
+            url: '/entry/' + id,
+            contentType: 'application/json',
+            success: function (data) {
+                $('#modal_id').html(data.method + " " + data.url);
+                $('#modal-title').html("Edit the entry");
+                $('#hits').html("Number of hits : " + data.hits);
+                $('#modalInSrc').html(JSON.stringify(data.bodyIn)).hide();
+                $('#modalOutSrc').html(JSON.stringify(data.bodyOut)).hide();
+                $('#modalInTgt').jsonFormat('#modalInSrc');
+                $('#modalOutTgt').jsonFormat('#modalOutSrc');
+                $('#entryId').attr("data-id", data._id);
+                $('.modifyButton').show();
+                $('#modalInSrc').hide();
+                $('#modalInTgt').show();
+                $('#modalOutSrc').hide();
+                $('#modalOutTgt').show();
+                $('.saveButton').addClass("disabled").html("Save");
+            }
+        })
+    });
+    $('#deleteAllEntries').click(function () {
+        $.ajax({
+            type: 'DELETE',
+            url: '/entry/',
+            contentType: 'application/json',
+            success: function (data) {
+                $('#entriesTable tbody tr').html("");
+            }
+        })
+    });
+    $('.deleteEntry').click(function (event) {
+        event.stopPropagation();
+        var id = $(this).attr('data-target');
+        $.ajax({
+            type: 'DELETE',
+            url: '/entry/' + id,
+            contentType: 'application/json',
+            success: function (data) {
+                $('tr#' + id).remove();
+            }
+        })
+
+        return false;
+    });
+    $('#online').change(function () {
+        var $input = $(this);
+        var online = $input.is(':checked');
+        $.ajax({
+            type: 'PUT',
+            url: '/setting/online',
+            data: '{"value": ' + online + ' }',
+            contentType: 'application/json'
+        })
+    });
+    $('#bypass').change(function () {
+        var $input = $(this);
+        var bypass = $input.is(':checked');
+        $.ajax({
+            type: 'PUT',
+            url: '/setting/bypass',
+            data: '{"value": ' + bypass + ' }',
+            contentType: 'application/json'
+        });
+    });
+    $('#refresh').click(function () {
+        location.reload();
+    });
+    $('.modifyButton').click(function () {
+        $('#modalInSrc').toggle();
+        $('#modalInTgt').toggle();
+        $('#modalOutSrc').toggle();
+        $('#modalOutTgt').toggle();
+        $('.saveButton').toggleClass("disabled");
+    });
+    $('.saveButton').click(function () {
+        var bodyIn = $('#modalInSrc').html();
+        var bodyOut = $('#modalOutSrc').html();
+        var id = $('#entryId').attr("data-id");
+        if (bodyIn == '') {
+            bodyIn = '""';
+        }
+        if (bodyOut == '') {
+            bodyOut = '""';
+        }
+        $.ajax({
+            type: 'PUT',
+            url: '/entry/' + id,
+            data: '{"bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
+            contentType: 'application/json',
+            success: function (data) {
+                $('.saveButton').text("Saved");
+                setTimeout(function () {
+                    $('.saveButton').text("Save");
                     $('#modalInTgt').jsonFormat('#modalInSrc');
                     $('#modalOutTgt').jsonFormat('#modalOutSrc');
-                    $('#entryId').attr("data-id", data._id);
-                }
-            })
-        });
-        $('#deleteAllEntries').click(function () {
-            $.ajax({
-                type: 'DELETE',
-                url: '/entry/',
-                contentType: 'application/json',
-                success: function (data) {
-                    $('#entriesTable tbody tr').html("");
-                }
-            })
-        });
-        $('.deleteEntry').click(function (event) {
-            event.stopPropagation();
-            var id = $(this).attr('data-target');
-            $.ajax({
-                type: 'DELETE',
-                url: '/entry/' + id,
-                contentType: 'application/json',
-                success: function (data) {
-                    $('tr#' + id).remove();
-                }
-            })
-
-            return false;
-        });
-        $('#online').change(function () {
-            var $input = $(this);
-            var online = $input.is(':checked');
-            $.ajax({
-                type: 'PUT',
-                url: '/setting/online',
-                data: '{"value": ' + online + ' }',
-                contentType: 'application/json'
-            })
-        });
-        $('#bypass').change(function () {
-            var $input = $(this);
-            var bypass = $input.is(':checked');
-            $.ajax({
-                type: 'PUT',
-                url: '/setting/bypass',
-                data: '{"value": ' + bypass + ' }',
-                contentType: 'application/json'
-            });
-        });
-        $('#refresh').click(function () {
-            location.reload();
-        });
-        $('.modifyButton').click(function () {
-            $('#modalInSrc').toggle();
-            $('#modalInTgt').toggle();
-            $('#modalOutSrc').toggle();
-            $('#modalOutTgt').toggle();
-            $('.saveButton').toggleClass("disabled");
-        });
-        $('.saveButton').click(function () {
-            var bodyIn = $('#modalInSrc').html();
-            var bodyOut = $('#modalOutSrc').html();
-            var id = $('#entryId').attr("data-id");
-            if (bodyIn == '') {
-                bodyIn = '""';
+                }, 2000);
+            },
+            error: function (xhr, type) {
+                $('.saveButton').text("Error...").removeClass('green').addClass('red');
+                setTimeout(function () {
+                    $('.saveButton').text("Save").removeClass('red').addClass('green');
+                }, 5000);
             }
-            if (bodyOut == '') {
-                bodyOut = '""';
-            }
-            $.ajax({
-                type: 'PUT',
-                url: '/entry/' + id,
-                data: '{"bodyIn": ' + bodyIn + ',"bodyOut":' + bodyOut + ' }',
-                contentType: 'application/json',
-                success: function (data) {
-                    $('.saveButton').text("Saved");
-                    setTimeout(function () {
-                        $('.saveButton').text("Save");
-                        $('#modalInTgt').jsonFormat('#modalInSrc');
-                        $('#modalOutTgt').jsonFormat('#modalOutSrc');
-                    }, 2000);
-                },
-                error: function (xhr, type) {
-                    $('.saveButton').text("Error...").removeClass('green').addClass('red');
-                    setTimeout(function () {
-                        $('.saveButton').text("Save").removeClass('red').addClass('green');
-                    }, 5000);
-                }
-            })
-        });
-        $('.saveSettings').click(function () {
-            var $btn = $(this);
-            var submitId = $btn.attr('id');
-            var $input = $('input[data-submit=' + submitId + ']');
-            var value = $input.val();
-            var currentId = $input.attr('id');
-            $.ajax({
-                type: 'PUT',
-                url: '/setting/' + currentId,
-                data: '{"value": "' + value + '" }',
-                contentType: 'application/json',
-                success: function (data) {
-                    $btn.addClass("green");
-                    $btn.text("Saved");
-                    setTimeout(function () {
-                        $btn.removeClass("green");
-                        $btn.text("Save");
-                    }, 2000);
-                },
-                error: function (xhr, type) {
-                    $btn.addClass("red");
-                    $btn.text("Error");
-                    setTimeout(function () {
-                        $btn.removeClass("red");
-                        $btn.text("Save");
-                    }, 2000);
-                }
-            })
-
-        });
+        })
     });
-    $('.menu-entry').click(function () {
-        doStatPoll();
-    });
-    $('input[type="checkbox"]').onoff();
-    var uptimeout = {};
-    function doStatPoll() {
-        $.getJSON('/stat', function (data) {
-            if ($('#stats').is(':visible')) {
-                $('#stat-call').html(data['call']);
-                $('#stat-hitcache').html(data['hit-cache']);
-                $('#stat-misscache').html(data['miss-cache']);
-                $('#stat-realcall').html(data['real-call']);
-                $('#stat-entriesnumber').html(data['entries-number']);
-                var uptime = data['uptime'];
-                $('#stat-uptime').html(uptime + "s (" + moment().subtract('seconds', uptime).fromNow() + ")");
-                uptimeout = setTimeout(doStatPoll, 1000);
-            } else {
-                clearTimeout(uptimeout);
+    $('.saveSettings').click(function () {
+        var $btn = $(this);
+        var submitId = $btn.attr('id');
+        var $input = $('input[data-submit=' + submitId + ']');
+        var value = $input.val();
+        var currentId = $input.attr('id');
+        $.ajax({
+            type: 'PUT',
+            url: '/setting/' + currentId,
+            data: '{"value": "' + value + '" }',
+            contentType: 'application/json',
+            success: function (data) {
+                $btn.addClass("green");
+                $btn.text("Saved");
+                setTimeout(function () {
+                    $btn.removeClass("green");
+                    $btn.text("Save");
+                }, 2000);
+            },
+            error: function (xhr, type) {
+                $btn.addClass("red");
+                $btn.text("Error");
+                setTimeout(function () {
+                    $btn.removeClass("red");
+                    $btn.text("Save");
+                }, 2000);
             }
+        })
 
-        });
-    }
+    });
+});
+$('.menu-entry').click(function () {
     doStatPoll();
+});
+$('input[type="checkbox"]').onoff();
+var uptimeout = {};
+function doStatPoll() {
+    $.getJSON('/stat', function (data) {
+        if ($('#stats').is(':visible')) {
+            $('#stat-call').html(data['call']);
+            $('#stat-hitcache').html(data['hit-cache']);
+            $('#stat-misscache').html(data['miss-cache']);
+            $('#stat-realcall').html(data['real-call']);
+            $('#stat-entriesnumber').html(data['entries-number']);
+            var uptime = data['uptime'];
+            $('#stat-uptime').html(uptime + "s (" + moment().subtract('seconds', uptime).fromNow() + ")");
+            uptimeout = setTimeout(doStatPoll, 1000);
+        } else {
+            clearTimeout(uptimeout);
+        }
+
+    });
+}
+doStatPoll();
 </script>
 </body>
 </html>

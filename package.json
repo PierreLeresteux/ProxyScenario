@@ -1,5 +1,5 @@
 { "name": "ProxyScenario",
-    "version": "1.2",
+    "version": "1.2-Backbone",
     "description": "A proxy to record scenario",
     "main": "http-proxy.js",
     "repository": {

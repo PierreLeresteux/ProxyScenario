@@ -7,9 +7,8 @@ For now, it's only accept JSON requests and responses.
 
 _____________________________________________________________________________________________
 ##Current version
--Current stable version is 1.0<br />
--Current RC version is 1.1-RC1<br />
--Current beta version is 1.1.1
+-Current stable version is 1.1.1<br />
+-Current beta version is 1.2
 ####Changes in 1.1.1 :
 - Add missing images
 - Fix bug to match entry (bodyIn in wrong type)
